@@ -1,0 +1,197 @@
+[
+  {
+    "id": "1",
+    "name": "Push Pull Legs",
+    "trainingPlan": [
+      {
+        "id": "1",
+        "name": "Push Day",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Incline Bench Press"
+          },
+          {
+            "id": "2",
+            "name": "Scull Crushers"
+          }
+        ],
+        "history": []
+      },
+      {
+        "id": "2",
+        "name": "Pull Day",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Pullups"
+          },
+          {
+            "id": "2",
+            "name": "Bicep Curl"
+          }
+        ],
+        "history": []
+      },
+      {
+        "id": "3",
+        "name": "Leg Day",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Front Squat"
+          },
+          {
+            "id": "2",
+            "name": "Hamstring Curls"
+          }
+        ],
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Upper Lower Split",
+    "trainingPlan": [
+      {
+        "id": "1",
+        "name": "Upper Body",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Bench Press"
+          },
+          {
+            "id": "2",
+            "name": "Barbell Rows"
+          }
+        ],
+        "history": []
+      },
+      {
+        "id": "2",
+        "name": "Lower Body",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Back Squat"
+          },
+          {
+            "id": "2",
+            "name": "Deadlift"
+          }
+        ],
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Full Body Workout",
+    "trainingPlan": [
+      {
+        "id": "1",
+        "name": "Full Body Day 1",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Deadlifts"
+          },
+          {
+            "id": "2",
+            "name": "Overhead Press"
+          }
+        ],
+        "history": []
+      },
+      {
+        "id": "2",
+        "name": "Full Body Day 2",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Bench Press"
+          },
+          {
+            "id": "2",
+            "name": "Lunges"
+          }
+        ],
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "name": "Bodyweight Routine",
+    "trainingPlan": [
+      {
+        "id": "1",
+        "name": "Upper Bodyweight",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Push-ups"
+          },
+          {
+            "id": "2",
+            "name": "Tricep Dips"
+          }
+        ],
+        "history": []
+      },
+      {
+        "id": "2",
+        "name": "Lower Bodyweight",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Bodyweight Squats"
+          },
+          {
+            "id": "2",
+            "name": "Lunges"
+          }
+        ],
+        "history": []
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "name": "Bro Split",
+    "trainingPlan": [
+      {
+        "id": "1",
+        "name": "Chest Day",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Chest Flyes"
+          },
+          {
+            "id": "2",
+            "name": "Dumbbell Press"
+          }
+        ],
+        "history": []
+      },
+      {
+        "id": "2",
+        "name": "Back Day",
+        "exercises": [
+          {
+            "id": "1",
+            "name": "Lat Pulldowns"
+          },
+          {
+            "id": "2",
+            "name": "T-Bar Rows"
+          }
+        ],
+        "history": []
+      }
+    ]
+  }
+]
