@@ -1,12 +1,19 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { useState } from 'react';
+import {
+  Text,
+  StyleSheet,
+  Pressable,
+  DimensionValue,
+  TouchableHighlight,
+} from 'react-native';
 
 type ButtonProps = {
   title: string;
   type?: string;
   disabled?: boolean;
   onButtonPress: () => void;
-  width?: number;
-  height?: number;
+  width?: DimensionValue | undefined;
+  height?: DimensionValue | undefined;
 };
 
 export default function ButtonPrimary({
@@ -16,10 +23,22 @@ export default function ButtonPrimary({
   width,
   height = 40,
 }: ButtonProps) {
+  const [isPressed, setIsPressed] = useState(false);
+
+  const touchProps = {
+    style: isPressed ? styles.btnPress : styles.button, // <-- but you can still apply other style changes
+    onPressIn: () => setIsPressed(true),
+    onPressOut: () => setIsPressed(false),
+  };
+
   return (
     <Pressable
       onPress={onButtonPress}
-      style={[styles.button, { width: width, height: height }]}
+      {...touchProps}
+      style={[
+        { width: width, height: height },
+        isPressed ? styles.btnPress : styles.button,
+      ]}
     >
       <Text style={styles.buttonText}>{title}</Text>
     </Pressable>
@@ -28,7 +47,6 @@ export default function ButtonPrimary({
 
 const styles = StyleSheet.create({
   button: {
-    width: '100%',
     height: 40,
     display: 'flex',
     alignItems: 'center',
@@ -41,5 +59,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
+  },
+  btnPress: {
+    height: 40,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'coral',
+    borderRadius: 20,
   },
 });

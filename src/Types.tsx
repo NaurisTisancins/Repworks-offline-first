@@ -18,19 +18,19 @@ export interface Exercise {
 
 export interface Session {
   id: string;
-  date: string;
+  date: Date;
   performedExercises: PerformedExercise[];
 }
 
 export interface PerformedExercise {
   id: string;
+  exerciseId: string;
   exercise: Exercise;
-  repsAndSets: RepsAndSets[];
+  repsAndSets: RepsAndSets[] | [];
 }
 
 export interface RepsAndSets {
   id: string;
-  set: string;
   weight: string;
   reps: string;
 }

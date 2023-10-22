@@ -1,26 +1,34 @@
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useStore } from '../../store';
+import { router } from 'expo-router';
 
-import { RepsAndSets } from '../../Types';
 import ButtonPrimary from '../../components/common/ButtonPrimary';
 import SessionForm from '../../components/SessionForm';
 
-type InitialValuesType = {
-  values: RepsAndSets[];
-};
-
 function SessionScreen() {
-  const { currentSession } = useStore();
+  const { currentTrainingDay, saveSession } = useStore();
+
+  function saveSessionToStore() {
+    saveSession();
+    router.replace('/');
+  }
 
   return (
     <View style={styles.container}>
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
       >
-        {currentSession?.exercises.map((item) => {
+        {currentTrainingDay?.exercises.map((item) => {
           return <SessionForm key={item.id} exercise={item} />;
         })}
+        <View style={{ marginTop: 20 }} />
+        <ButtonPrimary
+          title='Save session'
+          width='100%'
+          onButtonPress={saveSessionToStore}
+        />
       </ScrollView>
     </View>
   );

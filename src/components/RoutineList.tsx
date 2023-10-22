@@ -5,12 +5,20 @@ import { useStore } from '../store/index';
 import { observer } from 'mobx-react';
 
 const RoutineList = () => {
-  const { routinesList } = useStore();
+  const { routinesList, selectedRoutine } = useStore();
+
   return (
     <View style={styles.container}>
-      {routinesList.map((item) => {
-        return <RoutineView key={item.id} routine={item} />;
-      })}
+      {routinesList
+        .filter((routine) => {
+          if (selectedRoutine) {
+            return routine.id !== selectedRoutine.id;
+          }
+          return routine;
+        })
+        .map((item) => {
+          return <RoutineView key={item.id} routine={item} />;
+        })}
     </View>
   );
 };
@@ -23,4 +31,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RoutineList;
+export default observer(RoutineList);

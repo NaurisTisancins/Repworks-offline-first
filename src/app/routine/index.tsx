@@ -10,7 +10,7 @@ import { router } from 'expo-router';
 function RoutineScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState<TrainingDay | null>();
-  const { selectedRoutine, setCurrentSession } = useStore();
+  const { selectedRoutine, setCurrentTrainingDay, createSession } = useStore();
 
   function openModal(trainingDay: TrainingDay) {
     setModalVisible(true);
@@ -23,7 +23,8 @@ function RoutineScreen() {
 
   function startSession() {
     if (!selectedDay) return;
-    setCurrentSession(selectedDay.id);
+    setCurrentTrainingDay(selectedDay.id);
+    createSession();
     router.push('/routine/session');
     closeModal();
   }

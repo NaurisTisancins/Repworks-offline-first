@@ -1,42 +1,22 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native';
-import ButtonPrimary from './common/ButtonPrimary';
-import { Formik, FormikErrors, FieldArray } from 'formik';
-import { Exercise, RepsAndSets } from '../Types';
 import { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Formik } from 'formik';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+
 import uuid from 'react-native-uuid';
 
-type FormFieldProps = {
-  label: string;
-  value: string;
-  fieldName: string;
-  onChangeText: ((text: string) => void) | undefined;
-};
-
-const FormField = ({
-  label,
-  value,
-  fieldName,
-  onChangeText,
-}: FormFieldProps) => {
-  return (
-    <View style={styles.inputFieldContainer}>
-      <Text style={styles.inputLabel}>{label}</Text>
-      <TextInput
-        data-set={fieldName}
-        style={styles.inputField}
-        onChangeText={onChangeText}
-        value={value}
-      />
-    </View>
-  );
-};
+import { Exercise, RepsAndSets } from '../Types';
+import ButtonPrimary from './common/ButtonPrimary';
+import { useStore } from '../store';
+import FormFieldArray from './common/FormFieldArray';
 
 type SessionFormProps = {
   exercise: Exercise;
 };
 
 function SessionForm({ exercise }: SessionFormProps) {
+  const { setExercisePerformance, getCurrentSession } = useStore();
   const [setArray, setSetArray] = useState([
     {
       id: uuid.v4().toString(),
@@ -46,13 +26,17 @@ function SessionForm({ exercise }: SessionFormProps) {
     },
   ]);
 
-  function setFieldArrayValue(index, value, fieldName: 'weight' | 'reps') {
+  function setFieldArrayValue(
+    index: number,
+    value: string,
+    fieldName: 'weight' | 'reps'
+  ) {
     const findObject = { ...setArray[index] };
+
     findObject[`${fieldName}`] = value;
-    const copyArr = [...setArray];
+    let copyArr = [...setArray];
     copyArr[index] = findObject;
     setSetArray(copyArr);
-    console.log(copyArr);
   }
 
   function onAddSet() {
@@ -65,35 +49,17 @@ function SessionForm({ exercise }: SessionFormProps) {
         reps: '0',
       },
     ]);
-    console.log(setArray.length);
   }
 
-  // const renderSetFields = (
-  //   values: RepsAndSets[],
-  //   handleChange: {
-  //     (e: React.ChangeEvent<any>): void;
-  //     <T = string | React.ChangeEvent<any>>(
-  //       field: T
-  //     ): T extends React.ChangeEvent<any>
-  //       ? void
-  //       : (e: string | React.ChangeEvent<any>) => void;
-  //   }
-  // ) => {
-  //   return values.map((sesh, index) => (
-  //     <View key={sesh.id} style={styles.inputContainer}>
-  //       <FormField
-  //         label='Weight'
-  //         onChangeText={handleChange(`values.[${index}].weight`)}
-  //         value={values[index].weight}
-  //       />
-  //       <FormField
-  //         label='Reps'
-  //         onChangeText={handleChange(`values.[${index}].reps`)}
-  //         value={values[index].reps}
-  //       />
-  //     </View>
-  //   ));
-  // };
+  function onRemoveSet(setId: string) {
+    setSetArray((prev) => {
+      return prev.filter((currentSets) => currentSets.id !== setId);
+    });
+  }
+
+  function saveValues(values: RepsAndSets[]) {
+    setExercisePerformance(exercise.id, values);
+  }
 
   return (
     <View style={styles.exerciseContainer}>
@@ -102,7 +68,7 @@ function SessionForm({ exercise }: SessionFormProps) {
         initialValues={setArray}
         enableReinitialize
         onSubmit={(values) => {
-          onAddSet();
+          saveValues(values);
         }}
       >
         {({
@@ -112,28 +78,35 @@ function SessionForm({ exercise }: SessionFormProps) {
           values,
           setFieldValue,
         }) => (
-          <View>
-            {values.length > 0 &&
-              values.map((sesh, index) => (
-                <View key={sesh.id} style={styles.inputContainer}>
-                  <FormField
-                    fieldName={`values[$index].weight`}
-                    label='Weight'
-                    onChangeText={(e) => setFieldArrayValue(index, e, 'weight')}
-                    value={values[index].weight}
+          <GestureHandlerRootView>
+            <View>
+              <View>
+                {values.length > 0 &&
+                  values.map((set, index) => (
+                    <FormFieldArray
+                      key={set.id}
+                      index={index}
+                      set={set}
+                      values={values}
+                      setFieldArrayValue={setFieldArrayValue}
+                      onRemoveSet={() => onRemoveSet(set.id)}
+                    />
+                  ))}
+                <View style={styles.buttonContainer}>
+                  <ButtonPrimary
+                    width={100}
+                    title='Save'
+                    onButtonPress={handleSubmit}
                   />
-                  <FormField
-                    fieldName={`values[$index].reps`}
-                    label='Reps'
-                    onChangeText={(e) => setFieldArrayValue(index, e, 'reps')}
-                    value={values[index].reps}
+                  <ButtonPrimary
+                    width={150}
+                    title='Add set'
+                    onButtonPress={onAddSet}
                   />
                 </View>
-              ))}
-            <View style={styles.buttonContainer}>
-              <ButtonPrimary title='Add set' onButtonPress={handleSubmit} />
+              </View>
             </View>
-          </View>
+          </GestureHandlerRootView>
         )}
       </Formik>
     </View>
@@ -143,47 +116,25 @@ function SessionForm({ exercise }: SessionFormProps) {
 const styles = StyleSheet.create({
   exerciseContainer: {
     width: '100%',
-    backgroundColor: 'lightgray',
+    // backgroundColor: 'lightgray',
     borderRadius: 20,
     margin: 10,
   },
   exerciseTitle: {
-    color: 'black',
+    color: 'darkgray',
     fontSize: 20,
     fontWeight: '600',
     margin: 10,
   },
-  inputContainer: {
+
+  buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
-    width: '100%',
-    paddingHorizontal: 10,
+    justifyContent: 'center',
     gap: 10,
-  },
-  inputFieldContainer: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-
-    marginBottom: 10,
-  },
-  inputLabel: {
     width: '100%',
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 3,
+    padding: 10,
   },
-  inputField: {
-    height: 40,
-    width: '100%',
-    borderColor: 'darkgray',
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 5,
-    fontSize: 16,
-    backgroundColor: 'whitesmoke',
-  },
-  buttonContainer: { margin: 10 },
 });
 
 export default SessionForm;
