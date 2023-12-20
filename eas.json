@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 5.4.0"
+    "version": "5.4.0"
   },
   "build": {
     "development": {
@@ -19,13 +19,9 @@
   },
   "submit": {
     "production": {
-      "android": {
-        "serviceAccountKeyPath": "../path/to/api-xxx-yyy-zzz.json",
-        "track": "internal"
-      },
       "ios": {
-        "appleId": "john@turtle.com",
-        "ascAppId": "1234567890",
+        "appleId": "nauris.tisancins@icloud.com",
+        "ascAppId": "PSM8J6F2C2",
         "appleTeamId": "AB12XYZ34S"
       }
     }
