@@ -4,17 +4,17 @@ import { Text, View } from '../../components/Themed';
 import { useStore } from '../../store';
 
 export default function TabTwoScreen() {
-  const { selectedRoutine } = useStore();
+    const { activeRoutine } = useStore();
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        {selectedRoutine
-          ? selectedRoutine.name
-          : 'There are no Routines Selected'}
-      </Text>
-      <View>
-        {selectedRoutine?.trainingPlan.map((trainingDay) => {
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>
+                {activeRoutine
+                    ? activeRoutine.name
+                    : 'There are no Active Routines'}
+            </Text>
+            {/* <View>
+        {activeRoutine?.trainingPlan.map((trainingDay) => {
           return (
             <View>
               <Text>{trainingDay.name}</Text>
@@ -30,24 +30,24 @@ export default function TabTwoScreen() {
             </View>
           );
         })}
-      </View>
-    </View>
-  );
+      </View> */}
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    separator: {
+        marginVertical: 30,
+        height: 1,
+        width: '80%',
+    },
 });

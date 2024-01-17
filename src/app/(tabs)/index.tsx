@@ -1,25 +1,23 @@
 import { StyleSheet } from 'react-native';
 import { View } from '../../components/Themed';
-import RoutineList from '../../components/RoutineList';
-import SelectedRoutineView from '../../components/SelectedRoutineView';
+import ActiveRoutineView from '../../components/ActiveRoutineView';
 import { observer } from 'mobx-react';
 
-function HomeScreen() {
+const HomeScreen = () => {
     return (
         <View style={styles.container}>
-            <SelectedRoutineView />
-            <View style={styles.separator} />
-            <RoutineList />
+            <ActiveRoutineView />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: 'black',
         marginHorizontal: 14,
         marginVertical: 30,
-        gap: 30,
+        gap: 20,
     },
     separator: {
         borderBottomColor: 'lightgray',

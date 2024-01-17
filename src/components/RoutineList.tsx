@@ -1,63 +1,60 @@
-import { StyleSheet } from 'react-native';
-import { View, Text } from '../components/Themed';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import RoutineView from './RoutineListItem';
 import { useStore } from '../store/index';
 import { observer } from 'mobx-react';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import ButtonPrimary from './common/ButtonPrimary';
+import { router } from 'expo-router';
 
 const RoutineList = () => {
-    const { routinesList, selectedRoutine } = useStore();
-    const [response, setResponse] = useState(null);
+    const { routinesList, activeRoutine, getRoutines } = useStore();
 
-    async function getUsers() {
-        if (process.env.EXPO_PUBLIC_API_URL) {
-            try {
-                const response = await axios.get(
-                    process.env.EXPO_PUBLIC_API_URL
-                );
-                const data = await response.data;
-                if (data) {
-                    console.log(data);
-                    setResponse(data);
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        }
-    }
+    const getRoutinesList = async () => {
+        await getRoutines();
+    };
 
     useEffect(() => {
-        getUsers();
+        getRoutinesList();
     }, []);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.test}>{JSON.stringify(response, null, 2)}</Text>
-            {routinesList
-                .filter((routine) => {
-                    if (selectedRoutine) {
-                        return routine.id !== selectedRoutine.id;
-                    }
-                    return routine;
-                })
-                .map((item) => {
-                    return <RoutineView key={item.id} routine={item} />;
-                })}
-        </View>
+        <ScrollView
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+        >
+            <View style={styles.container}>
+                {routinesList
+                    .filter((routine) => {
+                        if (routine.is_active) {
+                            return !routine.is_active;
+                        }
+                        return routine;
+                    })
+                    .map((item) => {
+                        return (
+                            <RoutineView key={item.routine_id} routine={item} />
+                        );
+                    })}
+            </View>
+            <ButtonPrimary
+                onButtonPress={() => {
+                    router.push('/routine/createRoutine');
+                }}
+                title='Create a new routine'
+            />
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
-    test: {
-        color: 'red',
-    },
-
     container: {
         backgroundColor: 'black',
+        flex: 1,
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        gap: 20,
+        gap: 12,
+        marginBottom: 20,
     },
 });
 
