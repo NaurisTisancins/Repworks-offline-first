@@ -5,7 +5,7 @@ type WorkoutViewProps = {
     trainingDay: TrainingDay;
 };
 
-function TrainingPlanItem({ trainingDay }: WorkoutViewProps) {
+function TrainingDayItem({ trainingDay }: WorkoutViewProps) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{trainingDay.day_name}</Text>
@@ -59,4 +59,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TrainingPlanItem;
+export default TrainingDayItem;

@@ -1,9 +1,9 @@
 import { StyleSheet, ScrollView, Pressable, Text, View } from 'react-native';
 import { useStore } from '../../store';
-import TrainingPlanItem from '../../components/TrainingPlanItem';
+import TrainingDayItem from '../../components/TrainingDayItem';
 import MiniModal from '../../components/common/MiniModal';
 import { useEffect, useState } from 'react';
-import { Routine, TrainingDay } from '../../store/Types';
+import { TrainingDay } from '../../store/Types';
 import { router, useLocalSearchParams } from 'expo-router';
 import ButtonPrimary from '../../components/common/ButtonPrimary';
 
@@ -12,30 +12,25 @@ function RoutineScreen() {
     const [selectedDay, setSelectedDay] = useState<TrainingDay | null>();
     const { routine_id } = useLocalSearchParams();
     const {
-        // activeRoutine,
-        routinesList,
+        selectedRoutine,
+        setSelectedRoutineById,
+
         setCurrentTrainingDay,
         createSession,
         trainingDays,
         getTrainingDays,
     } = useStore();
 
-    const [selectedRoutine, setSelectedRoutine] = useState<Routine | undefined>(
-        routinesList.find((routine) => routine.routine_id === routine_id)
-    );
-
     const getTrainingDaysList = async () => {
         if (!selectedRoutine) {
-            return;
+            setSelectedRoutineById(routine_id as string);
         }
         await getTrainingDays(routine_id as string);
     };
 
     useEffect(() => {
         if (!routine_id) return;
-        setSelectedRoutine(
-            routinesList.find((routine) => routine.routine_id === routine_id)
-        );
+
         getTrainingDaysList();
     }, [routine_id]);
 
@@ -50,7 +45,7 @@ function RoutineScreen() {
 
     function startSession() {
         if (!selectedDay) return;
-        setCurrentTrainingDay(selectedDay.day_id);
+        selectedDay.day_id && setCurrentTrainingDay(selectedDay.day_id);
         createSession();
         router.push('/routine/session');
         closeModal();
@@ -65,17 +60,25 @@ function RoutineScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            {/* <Text style={{ color: 'white' }}>
+            <Text style={{ color: 'white' }}>
                 {JSON.stringify(selectedRoutine, null, 2)}
             </Text>
-            <Text style={{ color: 'white' }}>
-                {JSON.stringify(routine_id, null, 2)}
-            </Text> */}
-            <MiniModal
-                modalVisible={modalVisible}
-                closeModal={() => closeModal()}
-                confirmAction={() => startSession()}
-            />
+
+            <MiniModal modalVisible={modalVisible}>
+                <Text style={styles.textStyle}>Start Session?</Text>
+                <View style={styles.buttonsContainer}>
+                    <ButtonPrimary
+                        title='Start'
+                        onButtonPress={() => startSession()}
+                        width={80}
+                    />
+                    <ButtonPrimary
+                        title='Cancel'
+                        onButtonPress={() => closeModal()}
+                        width={80}
+                    />
+                </View>
+            </MiniModal>
             <View style={{ backgroundColor: 'black' }}>
                 <Text style={styles.name}>{selectedRoutine.name}</Text>
                 <View style={styles.trainingDayContainer}>
@@ -86,7 +89,7 @@ function RoutineScreen() {
                                     onPress={() => openModal(item)}
                                     key={item.day_id}
                                 >
-                                    <TrainingPlanItem trainingDay={item} />
+                                    <TrainingDayItem trainingDay={item} />
                                 </Pressable>
                             );
                         })
@@ -123,6 +126,22 @@ const styles = StyleSheet.create({
         gap: 20,
         backgroundColor: 'black',
         marginBottom: 20,
+    },
+
+    buttonsContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        gap: 5,
+    },
+    textStyle: {
+        color: 'black',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 10,
+        fontSize: 20,
     },
 });
 

@@ -15,10 +15,9 @@ import {
     UseControllerProps,
 } from 'react-hook-form';
 
-import Constants from 'expo-constants';
-
 interface TextInputProps extends RNTextInputProps, UseControllerProps {
     label: string;
+    labelColor?: string;
     name: string;
     defaultValue?: string;
     setFormError: Function;
@@ -28,7 +27,8 @@ const ControlledInput = (props: TextInputProps) => {
     const formContext = useFormContext();
     const { formState } = formContext;
 
-    const { name, label, rules, defaultValue, ...inputProps } = props;
+    const { name, label, labelColor, rules, defaultValue, ...inputProps } =
+        props;
 
     const { field } = useController({ name, rules, defaultValue });
 
@@ -38,18 +38,23 @@ const ControlledInput = (props: TextInputProps) => {
         ? styles.multiLineInput
         : styles.input;
 
+    const lableStyle = {
+        ...styles.label,
+        color: labelColor ? labelColor : styles.label.color,
+    };
+
     return (
         <View style={styles.container}>
-            {label && <Text style={styles.label}>{label}</Text>}
+            {label && <Text style={lableStyle}>{label}</Text>}
             <View>
                 <RNTextInput
                     autoCapitalize='none'
                     textAlign='left'
-                    style={inputStyleProps}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
                     value={field.value}
                     {...inputProps}
+                    style={inputStyleProps}
                 />
 
                 <View style={styles.errorContainer}>
@@ -86,7 +91,7 @@ export const TextInput = (props: TextInputProps) => {
 const styles = StyleSheet.create({
     label: {
         color: 'white',
-        margin: 10,
+        marginBottom: 10,
         marginLeft: 0,
     },
     container: {
@@ -95,14 +100,12 @@ const styles = StyleSheet.create({
     },
     input: {
         backgroundColor: 'white',
-        // borderColor: 'none',
         height: 40,
         padding: 10,
         borderRadius: 4,
     },
     multiLineInput: {
         backgroundColor: 'white',
-        // borderColor: 'none',
         minHeight: 80,
         padding: 10,
         borderRadius: 4,

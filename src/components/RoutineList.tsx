@@ -7,54 +7,46 @@ import ButtonPrimary from './common/ButtonPrimary';
 import { router } from 'expo-router';
 
 const RoutineList = () => {
-    const { routinesList, activeRoutine, getRoutines } = useStore();
+    const { routinesList, setSelectedRoutine, activeRoutines, getRoutines } =
+        useStore();
 
     const getRoutinesList = async () => {
         await getRoutines();
     };
 
     useEffect(() => {
+        // setSelectedRoutine(null);
         getRoutinesList();
+
+        return () => {
+            setSelectedRoutine(null);
+        };
     }, []);
 
     return (
         <ScrollView
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
+            style={{
+                flex: -1,
+                display: 'flex',
+                gap: 12,
+            }}
         >
             <View style={styles.container}>
-                {routinesList
-                    .filter((routine) => {
-                        if (routine.is_active) {
-                            return !routine.is_active;
-                        }
-                        return routine;
-                    })
-                    .map((item) => {
-                        return (
-                            <RoutineView key={item.routine_id} routine={item} />
-                        );
-                    })}
+                {routinesList.map((item) => {
+                    return <RoutineView key={item.routine_id} routine={item} />;
+                })}
             </View>
-            <ButtonPrimary
-                onButtonPress={() => {
-                    router.push('/routine/createRoutine');
-                }}
-                title='Create a new routine'
-            />
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'black',
-        flex: 1,
+        // backgroundColor: 'red',
         height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
         gap: 12,
-        marginBottom: 20,
     },
 });
 

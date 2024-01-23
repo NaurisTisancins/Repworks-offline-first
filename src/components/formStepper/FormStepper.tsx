@@ -3,51 +3,45 @@ import {
     Text,
     View,
     StyleSheet,
-    Pressable,
     StyleProp,
     ViewStyle,
+    TextStyle,
 } from 'react-native';
+import ButtonPrimary from '../common/ButtonPrimary';
 
 type StepProps = {
-    lable: string;
-    description?: string;
-    step: number;
+    step: FormStep;
     done?: boolean;
     active?: boolean;
-    setActive: (step: number) => void;
+    setActive: (step: FormStep) => void;
 };
 
-const Step = ({
-    lable,
-    description,
-    step,
-    done = false,
-    active = false,
-    setActive,
-}: StepProps) => {
-    const activeStyle: StyleProp<ViewStyle> = active
-        ? {
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'teal',
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-          }
-        : {
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'lightgray',
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-          };
+const Step = ({ step, active = false, setActive }: StepProps) => {
+    const activeStyle: StyleProp<ViewStyle> = {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: `${step.done && 'green'}`,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+    };
+
+    const activeTextStyle: StyleProp<TextStyle> = {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: '600',
+    };
+
     return (
-        <Pressable style={styles.stepContainer} onPress={() => setActive(step)}>
+        <ButtonPrimary
+            variant={`${active ? 'primary' : 'outlined'}`}
+            style={styles.stepContainer}
+            onButtonPress={() => setActive(step)}
+        >
             <View style={activeStyle}>
-                <Text style={styles.stepNumber}>{step}</Text>
+                <Text style={activeTextStyle}>{step.value}</Text>
             </View>
-        </Pressable>
+        </ButtonPrimary>
     );
 };
 
@@ -58,30 +52,32 @@ const Separator = () => {
 export type FormStep = {
     title: string;
     description: string;
+    value: number;
+    done: boolean;
 };
 
 type FormStepperProps = {
     steps: FormStep[];
+    activeStep: FormStep;
+    setActiveStep: (step: FormStep) => void;
 };
 
-const FormStepper = ({ steps }: FormStepperProps) => {
-    const [activeStep, setActiveStep] = React.useState(0);
-
-    function setActive(step: number) {
-        setActiveStep(step);
-    }
+const FormStepper = ({
+    steps,
+    activeStep,
+    setActiveStep,
+}: FormStepperProps) => {
     return (
-        <>
+        <View>
             <View style={styles.stepperContainer}>
                 {steps.map((step: FormStep, index) => {
                     return (
                         <>
                             <Step
-                                lable={step.title}
-                                description={step.description}
-                                step={index + 1}
-                                setActive={setActive}
-                                active={index + 1 === activeStep}
+                                key={step.value}
+                                step={step}
+                                setActive={setActiveStep}
+                                active={activeStep.value === step.value}
                             />
                             {index !== steps.length - 1 && <Separator />}
                         </>
@@ -91,7 +87,7 @@ const FormStepper = ({ steps }: FormStepperProps) => {
             <View style={styles.description}>
                 {steps
                     .filter((step, index) => {
-                        return index + 1 === activeStep;
+                        return step.value === activeStep.value;
                     })
                     .map((step) => {
                         return (
@@ -101,7 +97,7 @@ const FormStepper = ({ steps }: FormStepperProps) => {
                         );
                     })}
             </View>
-        </>
+        </View>
     );
 };
 
@@ -124,20 +120,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'transparent',
+        borderRadius: 20,
         gap: 10,
-    },
-
-    stepNumber: {
-        color: 'black',
-        fontSize: 20,
     },
     stepLable: {
         color: 'white',
+        fontSize: 24,
+        fontWeight: '600',
     },
     stepSeparator: {
-        backgroundColor: 'blue',
-        width: 80,
+        backgroundColor: 'white',
+        width: '10%',
         height: 2,
+        borderRadius: 2,
         // marginTop: 20,
     },
 });

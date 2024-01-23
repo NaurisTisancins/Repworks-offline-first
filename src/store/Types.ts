@@ -1,6 +1,6 @@
 // data types
 export interface Routine {
-    routine_id: string;
+    routine_id?: string;
     name: string;
     description: string;
     is_active: boolean;
@@ -13,15 +13,22 @@ export type CreateRoutinePayload = {
 };
 
 export interface TrainingDay {
-    day_id: string;
+    day_id?: string;
     day_name: string;
-    // exercises: Exercise[];
-    // history: Session[];
 }
+
+export type CreateTrainingDaysPayload = {
+    routine_id: string;
+    day_name: string;
+};
+
+export type CreateTrainingDayPayload = {
+    day_name: string;
+};
 
 export interface Exercise {
     exercise_id: string;
-    name: string;
+    exercise_name: string;
 }
 
 export interface Session {
@@ -54,3 +61,5 @@ export type RoutinesResponse = Routine[];
 export type RoutineResponse = Routine;
 
 export type TrainingDaysResponse = TrainingDay[];
+
+export type ExercisesResponse = Exercise[];

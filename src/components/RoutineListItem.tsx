@@ -1,5 +1,12 @@
 import { Routine } from '../store/Types';
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Text,
+    Pressable,
+    StyleProp,
+    ViewStyle,
+} from 'react-native';
 import { useStore } from '../store/index';
 import { router } from 'expo-router';
 
@@ -8,15 +15,24 @@ type RoutineProps = {
 };
 
 export default function RoutineListItem({ routine }: RoutineProps) {
-    const { setActiveRoutine } = useStore();
+    const { setActiveRoutines, setSelectedRoutine } = useStore();
     // const numberOfTrainingDays = routine.length;
 
     function onSelect(): void {
+        setSelectedRoutine(routine);
         router.push(`/routine/${routine.routine_id}`);
     }
 
+    const activeStyle: StyleProp<ViewStyle> = {
+        height: 50,
+        width: '100%',
+        backgroundColor: `${routine.is_active === true ? 'teal' : 'lightgray'}`,
+        borderRadius: 20,
+        padding: 15,
+    };
+
     return (
-        <Pressable onPress={onSelect} style={styles.container}>
+        <Pressable onPress={onSelect} style={activeStyle}>
             <View style={styles.header}>
                 <Text style={styles.title}>{routine.name}</Text>
                 {/* <Text>{numberOfTrainingDays} day split</Text> */}
@@ -26,13 +42,7 @@ export default function RoutineListItem({ routine }: RoutineProps) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        height: 50,
-        width: '100%',
-        backgroundColor: 'lightgray',
-        borderRadius: 20,
-        padding: 15,
-    },
+    container: {},
 
     header: {
         flex: 1,

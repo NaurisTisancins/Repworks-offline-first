@@ -1,9 +1,16 @@
-import { StyleSheet } from 'react-native';
-import { View } from '../../components/Themed';
+import { StyleSheet, Text, View } from 'react-native';
 import ActiveRoutineView from '../../components/ActiveRoutineView';
 import { observer } from 'mobx-react';
+import { useStore } from '../../store';
+import { useEffect } from 'react';
 
 const HomeScreen = () => {
+    const { getActiveRoutines } = useStore();
+
+    useEffect(() => {
+        getActiveRoutines();
+    }, []);
+
     return (
         <View style={styles.container}>
             <ActiveRoutineView />

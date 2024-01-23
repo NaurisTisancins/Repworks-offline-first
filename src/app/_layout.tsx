@@ -5,12 +5,12 @@ import {
     ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Link, SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { Pressable, useColorScheme } from 'react-native';
-import { RoutineStoreProvider } from '../store/index';
+import { RoutineStoreProvider, useStore } from '../store/index';
 import { Text } from 'react-native';
-import Icon from '../components/common/Icon';
+import { set } from 'react-hook-form';
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -51,6 +51,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
     const colorScheme = useColorScheme();
+    const { selectedRoutine, setSelectedRoutine, clearStoredData } = useStore();
 
     return (
         // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -60,6 +61,9 @@ function RootLayoutNav() {
                     screenOptions={(props) => {
                         return {
                             headerBackTitle: 'Back',
+                            // onPressBack: async () => {
+                            //     setSelectedRoutine(null);
+                            // },
                             headerRight: () => (
                                 <Pressable
                                     onPress={() => {

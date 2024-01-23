@@ -6,70 +6,84 @@ import {
     Pressable,
     DimensionValue,
     TouchableHighlight,
+    StyleProp,
+    ViewStyle,
+    PressableStateCallbackType,
+    PressableProps,
 } from 'react-native';
 
 type ButtonProps = {
-    title: string;
-
+    title?: string;
+    variant?: 'primary' | 'outlined';
     disabled?: boolean;
     onButtonPress: () => void;
     width?: DimensionValue | undefined;
     height?: DimensionValue | undefined;
+    children?: React.ReactNode;
+    style?: StyleProp<ViewStyle>;
 };
 
 export default function ButtonPrimary({
     title,
-
-    disabled,
+    variant = 'primary',
+    disabled = false,
     onButtonPress,
     width,
     height = 40,
+    children,
+    style,
 }: ButtonProps) {
-    const [isPressed, setIsPressed] = useState(false);
+    const buttonVariantStyles = (pressed: boolean): StyleProp<ViewStyle> => {
+        const baseStyle: StyleProp<ViewStyle> = {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: width,
+            height: height,
+            borderRadius: 8,
+            ...(style as object),
+        };
 
-    const touchProps = {
-        style: isPressed ? styles.btnPress : styles.button, // <-- but you can still apply other style changes
-        onPressIn: () => setIsPressed(true),
-        onPressOut: () => setIsPressed(false),
+        const disabledStyle: string = 'lightblue';
+
+        const backgroundColorPrimary = pressed ? 'coral' : 'teal';
+
+        switch (variant) {
+            case 'primary':
+                return {
+                    ...baseStyle,
+                    backgroundColor: disabled
+                        ? disabledStyle
+                        : backgroundColorPrimary,
+                };
+            case 'outlined':
+                return {
+                    ...baseStyle,
+                    backgroundColor: disabled ? disabledStyle : 'black',
+                    borderWidth: 2,
+                    borderColor: 'teal',
+                };
+        }
     };
 
     return (
         <>
             <Pressable
                 onPress={onButtonPress}
-                {...touchProps}
-                style={[
-                    { width: width, height: height },
-                    isPressed ? styles.btnPress : styles.button,
-                ]}
+                disabled={disabled}
+                style={({ pressed }) => buttonVariantStyles(pressed)}
             >
-                <Text style={styles.buttonText}>{title}</Text>
+                {children ?? <Text style={styles.buttonText}>{title}</Text>}
             </Pressable>
         </>
     );
 }
 
 const styles = StyleSheet.create({
-    button: {
-        height: 40,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'teal',
-        borderRadius: 8,
-    },
     buttonText: {
         textAlign: 'center',
         color: 'white',
         fontWeight: '600',
         fontSize: 16,
-    },
-    btnPress: {
-        height: 40,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'coral',
-        borderRadius: 8,
     },
 });

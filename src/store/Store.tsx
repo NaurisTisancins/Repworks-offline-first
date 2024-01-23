@@ -1,8 +1,27 @@
 import { makeAutoObservable } from 'mobx';
-import { makePersistable, configurePersistable } from 'mobx-persist-store';
+import {
+    makePersistable,
+    configurePersistable,
+    stopPersisting,
+    clearPersistedStore,
+} from 'mobx-persist-store';
 import uuid from 'react-native-uuid';
 import { get, mainClient, post, routeConfig } from '../services/api/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+    RepsAndSets,
+    Routine,
+    Session,
+    TrainingDay,
+    BaseResponseType,
+    RoutinesResponse,
+    TrainingDaysResponse,
+    CreateRoutinePayload,
+    CreateTrainingDaysPayload,
+    CreateTrainingDayPayload,
+    Exercise,
+    ExercisesResponse,
+} from './Types';
 
 configurePersistable({
     storage: AsyncStorage,
@@ -13,27 +32,27 @@ configurePersistable({
 type LoadingState =
     | 'create-routine'
     | 'activate-routine'
+    | 'update-routine'
     | 'get-routines'
     | 'delete-routine'
-    | 'get-active-routine'
-    | 'get-training-days';
-
-// import routines from '../../assets/data/routines.json';
-import {
-    RepsAndSets,
-    Routine,
-    Session,
-    TrainingDay,
-    BaseResponseType,
-    RoutinesResponse,
-    TrainingDaysResponse,
-    CreateRoutinePayload,
-} from './Types';
+    | 'get-active-routines'
+    | 'get-training-days'
+    | 'create-training-days'
+    | 'create-training-day'
+    | 'searching-exercises'
+    | 'add-exercise-to-training-day'
+    | 'get-exercises-by-training-day-id';
 
 export class RoutineStore {
     loadingState: LoadingState[] = [];
+
     routinesList: Routine[] = [];
-    activeRoutine: null | Routine = null;
+
+    activeRoutines: Routine[] = [];
+    selectedRoutine: null | Routine = null;
+
+    exerciseList: Exercise[] = [];
+
     trainingDays: TrainingDay[] = [];
     currentTrainingDay: TrainingDay | null = null;
     currentSession: Session | null = null;
@@ -44,12 +63,22 @@ export class RoutineStore {
             name: 'routine-store',
             properties: [
                 'routinesList',
-                'activeRoutine',
+                'activeRoutines',
+                'selectedRoutine',
+                'exerciseList',
                 'trainingDays',
                 'currentTrainingDay',
                 'currentSession',
             ],
         });
+    }
+
+    async stopPersistingStore() {
+        stopPersisting('routine-store');
+    }
+
+    async clearStoredData() {
+        await clearPersistedStore(this);
     }
 
     get isLoading() {
@@ -75,7 +104,7 @@ export class RoutineStore {
     };
 
     setCurrentTrainingDay = (id: string) => {
-        if (!this.activeRoutine) return;
+        if (!this.selectedRoutine) return;
         const currentTrainingDayIdx = this.trainingDays.findIndex(
             (item) => item.day_id === id
         );
@@ -180,6 +209,42 @@ export class RoutineStore {
         this.removeLoadingState('get-routines');
     };
 
+    getActiveRoutines = async () => {
+        this.setActiveRoutines([]);
+        this.addLoadingState('get-active-routines');
+        await get<BaseResponseType<RoutinesResponse>>({
+            client: mainClient,
+            url: routeConfig.getActiveRoutines,
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // @ts-ignore
+                    this.setActiveRoutines(response.data);
+                }
+            },
+        });
+        this.removeLoadingState('get-active-routines');
+    };
+
+    setSelectedRoutine = (routine: Routine | null) => {
+        this.selectedRoutine = routine;
+    };
+
+    setSelectedRoutineById = async (routine_id: string) => {
+        if (!this.routinesList) await this.getRoutines();
+        const routine = this.routinesList.find(
+            (item) => item.routine_id === routine_id
+        );
+        if (routine) {
+            this.setSelectedRoutine(routine);
+        }
+        this.selectedRoutine &&
+            this.selectedRoutine.routine_id &&
+            (await this.getTrainingDays(this.selectedRoutine.routine_id));
+    };
+
     createRoutine = async (payload: CreateRoutinePayload) => {
         this.addLoadingState('create-routine');
         const data = await post<BaseResponseType<RoutinesResponse>>({
@@ -193,7 +258,7 @@ export class RoutineStore {
             onResponse: (response) => {
                 if (response?.data) {
                     // @ts-ignore
-                    this.setactiveRoutine(response.data);
+                    this.setSelectedRoutine(response.data);
                 }
                 return response?.data;
             },
@@ -202,12 +267,52 @@ export class RoutineStore {
         return data;
     };
 
+    deleteRoutineById = async (routine_id: string) => {
+        this.addLoadingState('delete-routine');
+        const deletedRoutineId = await post<BaseResponseType<string>>({
+            client: mainClient,
+            url: routeConfig.deleteRoutineById(routine_id),
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // @ts-ignore
+                    this.setSelectedRoutine(null);
+                }
+            },
+        });
+        this.removeLoadingState('delete-routine');
+        return deletedRoutineId;
+    };
+
+    updateRoutine = async (payload: Routine) => {
+        this.addLoadingState('update-routine');
+        const data = await post<BaseResponseType<RoutinesResponse>>({
+            client: mainClient,
+            url: routeConfig.updateRoutine,
+            data: payload,
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // @ts-ignore
+                    this.setSelectedRoutine(response.data);
+                }
+                return response?.data;
+            },
+        });
+        this.removeLoadingState('update-routine');
+        return data;
+    };
+
     setTrainingDays = (trainingDays: TrainingDay[]) => {
         this.trainingDays = trainingDays;
     };
 
     getTrainingDays = async (routine_id: string) => {
-        if (!this.routinesList) return;
+        if (!this.selectedRoutine) return;
         this.addLoadingState('get-training-days');
 
         await get<BaseResponseType<TrainingDaysResponse>>({
@@ -226,11 +331,139 @@ export class RoutineStore {
         this.removeLoadingState('get-training-days');
     };
 
-    setActiveRoutine = (routine: Routine) => {
-        this.activeRoutine = routine;
+    createTrainingDays = async (payload: CreateTrainingDaysPayload[]) => {
+        this.addLoadingState('create-training-days');
+        const data = await post<BaseResponseType<TrainingDaysResponse>>({
+            client: mainClient,
+            url: routeConfig.createTrainingDays,
+            data: payload,
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // @ts-ignore
+                    this.setTrainingDays(response.data);
+                }
+            },
+        });
+        this.removeLoadingState('create-training-days');
+        return data;
+    };
+
+    appendTrainingDay = (trainingDay: TrainingDay) => {
+        this.trainingDays = [...this.trainingDays, trainingDay];
+    };
+
+    createTrainingDay = async (routine_id: string, payload: string) => {
+        console.log(payload);
+        this.addLoadingState('create-training-day');
+        const data = await post<BaseResponseType<TrainingDaysResponse>>({
+            client: mainClient,
+            url: routeConfig.createTrainingDay(routine_id),
+            data: {
+                routine_id,
+                day_name: payload,
+            },
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // @ts-ignore
+                    this.appendTrainingDay(response.data);
+                }
+            },
+        });
+        this.removeLoadingState('create-training-day');
+        return data;
+    };
+
+    setActiveRoutines = (routines: Routine[]) => {
+        this.activeRoutines = [...routines];
     };
 
     // activateRoutine TODO: Implement this
 
-    getActiveRoutine = () => {};
+    getExercises = async () => {
+        await get({
+            client: mainClient,
+            url: routeConfig.getAllExercises,
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                console.log(response);
+            },
+        });
+    };
+
+    setExerciseList = (exercises: Exercise[]) => {
+        this.exerciseList = exercises;
+    };
+
+    searchExercises = async (searchTerm: string) => {
+        this.addLoadingState('searching-exercises');
+
+        const exercises = await get<BaseResponseType<ExercisesResponse>>({
+            client: mainClient,
+            url: routeConfig.searchExercises(searchTerm),
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // @ts-ignore
+                    this.setExerciseList(response.data);
+                }
+            },
+        });
+
+        this.removeLoadingState('searching-exercises');
+        return exercises;
+    };
+
+    addExerciseToTrainingDay = async (
+        training_day_id: string,
+        exercise_id: string
+    ) => {
+        this.addLoadingState('add-exercise-to-training-day');
+        const data = await post<BaseResponseType<Exercise>>({
+            client: mainClient,
+            url: routeConfig.addExerciseToTrainingDay(
+                exercise_id,
+                training_day_id
+            ),
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // @ts-ignore
+                    return response.data;
+                }
+            },
+        });
+        this.removeLoadingState('add-exercise-to-training-day');
+        return data;
+    };
+
+    getExercisesByTrainingDayId = async (training_day_id: string) => {
+        this.addLoadingState('get-exercises-by-training-day-id');
+        const data = await get<BaseResponseType<Exercise[]>>({
+            client: mainClient,
+            url: routeConfig.getExercisesByTrainingDayId(training_day_id),
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // @ts-ignore
+                    return response.data;
+                }
+            },
+        });
+        this.removeLoadingState('get-exercises-by-training-day-id');
+        return data;
+    };
 }
