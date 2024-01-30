@@ -9,7 +9,7 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { Pressable, useColorScheme } from 'react-native';
 import { RoutineStoreProvider, useStore } from '../store/index';
-import { Text } from 'react-native';
+import { Text } from '../components/Themed';
 import { set } from 'react-hook-form';
 
 export {

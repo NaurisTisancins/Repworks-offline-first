@@ -17,6 +17,10 @@ export interface TrainingDay {
     day_name: string;
 }
 
+export type TrainingDayWithExercises = TrainingDay & {
+    exercises: Exercise[] | [];
+};
+
 export type CreateTrainingDaysPayload = {
     routine_id: string;
     day_name: string;
@@ -27,6 +31,7 @@ export type CreateTrainingDayPayload = {
 };
 
 export interface Exercise {
+    link_id?: string;
     exercise_id: string;
     exercise_name: string;
 }
@@ -63,3 +68,5 @@ export type RoutineResponse = Routine;
 export type TrainingDaysResponse = TrainingDay[];
 
 export type ExercisesResponse = Exercise[];
+
+export type TrainingDayExercisesResponse = Exercise[];

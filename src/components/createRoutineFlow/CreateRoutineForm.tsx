@@ -1,4 +1,5 @@
-import { View, Text, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text } from '../../components/Themed';
 import { TextInput } from '../common/TextInput';
 import Checkbox from 'expo-checkbox';
 import ButtonPrimary from '../common/ButtonPrimary';
@@ -13,6 +14,8 @@ import {
 import { useStore } from '../../store';
 import { FormStep } from '../formStepper/FormStepper';
 import React from 'react';
+import Colors from '../../constants/Colors';
+import Sizing from '../../constants/Sizing';
 
 export interface FormValues extends FieldValues {
     name: string;
@@ -69,7 +72,7 @@ const CreateRoutineForm = ({
     };
 
     return (
-        <View style={{ height: '100%' }}>
+        <View style={styles.container}>
             <FormProvider {...methods}>
                 {formError ? (
                     <View>
@@ -104,7 +107,8 @@ const CreateRoutineForm = ({
                             style={{
                                 flex: -1,
                                 flexDirection: 'row',
-                                marginBottom: 10,
+                                backgroundColor: 'transparent',
+                                marginBottom: Sizing.spacing['md'],
                                 gap: 10,
                             }}
                         >
@@ -127,46 +131,55 @@ const CreateRoutineForm = ({
                                 Set as Active Routine?
                             </Text>
                         </View>
-                        <View
-                            style={{
-                                right: 0,
-                                left: 0,
-                                position: 'absolute',
-                                bottom: 100,
-                            }}
+
+                        <ButtonPrimary
+                            disabled={
+                                isStateLoading('create-routine') ||
+                                !methods.formState.isValid
+                            }
+                            onButtonPress={methods.handleSubmit(
+                                onSubmitRoutine
+                            )}
                         >
-                            <ButtonPrimary
-                                disabled={
-                                    isStateLoading('create-routine') ||
-                                    !methods.formState.isValid
-                                }
-                                onButtonPress={methods.handleSubmit(
-                                    onSubmitRoutine
-                                )}
-                            >
-                                {isStateLoading('create-routine') ? (
-                                    <ActivityIndicator
-                                        size='small'
-                                        color='white'
-                                    />
-                                ) : (
-                                    <Text
-                                        style={{
-                                            color: 'white',
-                                            fontWeight: '600',
-                                            fontSize: 16,
-                                        }}
-                                    >
-                                        Submit Routine
-                                    </Text>
-                                )}
-                            </ButtonPrimary>
-                        </View>
+                            {isStateLoading('create-routine') ? (
+                                <ActivityIndicator size='small' color='white' />
+                            ) : (
+                                <Text
+                                    style={{
+                                        color: 'white',
+                                        fontWeight: '600',
+                                        fontSize: 16,
+                                    }}
+                                >
+                                    Submit Routine
+                                </Text>
+                            )}
+                        </ButtonPrimary>
                     </>
                 )}
             </FormProvider>
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        height: '100%',
+        backgroundColor: Colors.dark['background'],
+        gap: Sizing.spacing['md'],
+    },
+    formContainer: {
+        backgroundColor: 'transparent',
+        paddingHorizontal: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['md'],
+    },
+    formNavigationButtons: {
+        position: 'absolute',
+        bottom: 50,
+        right: 0,
+        left: 0,
+        flexDirection: 'row',
+    },
+});
 
 export default CreateRoutineForm;

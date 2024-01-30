@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { useEffect } from 'react';
 import ButtonPrimary from './common/ButtonPrimary';
 import { router } from 'expo-router';
+import Colors from '../constants/Colors';
 
 const RoutineList = () => {
     const { routinesList, setSelectedRoutine, activeRoutines, getRoutines } =
@@ -44,7 +45,7 @@ const RoutineList = () => {
 
 const styles = StyleSheet.create({
     container: {
-        // backgroundColor: 'red',
+        backgroundColor: Colors.dark['background'],
         height: '100%',
         gap: 12,
     },

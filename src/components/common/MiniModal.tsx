@@ -1,5 +1,7 @@
 import { View, StyleSheet, Modal } from 'react-native';
 import Icon from './Icon';
+import Colors from '../../constants/Colors';
+import Sizing from '../../constants/Sizing';
 
 type MiniModalTypes = {
     modalVisible: boolean;
@@ -33,13 +35,13 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 60,
+        marginVertical: Sizing.spacing['xxl3'],
     },
     modalView: {
-        width: '80%',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 20,
+        width: '90%',
+        backgroundColor: Colors.dark['gray200'],
+        borderRadius: Sizing.borderRadius['md'],
+        padding: Sizing.spacing['md'],
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {

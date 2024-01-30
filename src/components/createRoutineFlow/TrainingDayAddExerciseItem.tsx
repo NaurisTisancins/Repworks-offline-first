@@ -1,5 +1,16 @@
-import { Exercise, TrainingDay } from '../../store/Types';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+    Exercise,
+    TrainingDay,
+    TrainingDayWithExercises,
+} from '../../store/Types';
+import {
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
 import { useStore } from '../../store';
 import React from 'react';
 import ButtonPrimary from '../common/ButtonPrimary';
@@ -7,10 +18,15 @@ import Icon from '../common/Icon';
 import { useDebounce } from '../../utils/use-debounce';
 import MiniModal from '../common/MiniModal';
 import ExerciseSearchModalContent from '../ExerciseSearchModalContent';
-import ExerciseListItem from '../ExerciseListItem';
+import ExerciseListItemSelected from '../ExerciseListItemSelected';
+import Colors from '../../constants/Colors';
+import Sizing from '../../constants/Sizing';
+import { toJS } from 'mobx';
+import { set } from 'react-hook-form';
+import { observer } from 'mobx-react';
 
 type AddExercisesProps = {
-    trainingDay: TrainingDay;
+    trainingDay: TrainingDayWithExercises;
 };
 
 function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
@@ -32,6 +48,7 @@ function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
         exerciseList,
         addExerciseToTrainingDay,
         getExercisesByTrainingDayId,
+        removeExerciseFromTrainingDay,
     } = useStore();
 
     async function searchExerciseList() {
@@ -42,7 +59,16 @@ function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
         searchExerciseList();
     }, [debouncedInputValue]);
 
-    React.useEffect(() => {}, []);
+    async function getExercises() {
+        if (!trainingDay.day_id) return;
+        const exercises = await getExercisesByTrainingDayId(
+            trainingDay?.day_id
+        );
+    }
+
+    React.useEffect(() => {
+        getExercises();
+    }, []);
 
     const onSubmitExercise = async (exercise: Exercise) => {
         if (!trainingDay.day_id) {
@@ -54,16 +80,16 @@ function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
             trainingDay.day_id
         );
 
-        console.log(exerciseData.data);
-
         if (exerciseData.data) {
-            let exercises = await getExercisesByTrainingDayId(
-                trainingDay.day_id
-            );
-
-            console.log(exercises);
+            await getExercisesByTrainingDayId(trainingDay.day_id);
         }
     };
+
+    async function onRemoveExerceiseFromDay(linkId: string) {
+        await removeExerciseFromTrainingDay(linkId);
+        if (!trainingDay.day_id) return;
+        await getExercisesByTrainingDayId(trainingDay.day_id);
+    }
 
     return (
         <View style={styles.container}>
@@ -73,14 +99,15 @@ function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     width: '100%',
-                    marginBottom: 10,
                 }}
                 onPress={() => {
                     setExerciseFormVisible(!exerciseFormVisible);
                 }}
             >
-                <Text style={styles.title}>{trainingDay.day_name}</Text>
-                <Text style={styles.title}>{trainingDay.day_id}</Text>
+                <View style={styles.titleChip}>
+                    <Text style={styles.title}>{trainingDay.day_name}</Text>
+                </View>
+
                 <View style={{}}>
                     {exerciseFormVisible ? (
                         <Icon name='chevron-up' size={18} color='black' />
@@ -89,24 +116,45 @@ function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
                     )}
                 </View>
             </Pressable>
-            <View style={styles.separator} />
-            {exerciseFormVisible && (
-                <View style={styles.exercisesContainer}>
-                    <ButtonPrimary
-                        style={{ marginBottom: 10 }}
-                        title='Add exercise'
-                        onButtonPress={() => openModal()}
-                    />
-                    {/* {exercises.map((exercise) => (
-                        <ExerciseListItem exercise={exercise} />
-                    ))} */}
-                </View>
-            )}
+
+            {!isStateLoading(
+                'add-exercise-to-training-day' ||
+                    'get-exercises-by-training-day-id'
+            ) &&
+                exerciseFormVisible && (
+                    <View style={styles.exercisesContainer}>
+                        <ButtonPrimary
+                            style={{ marginVertical: Sizing.spacing['lg'] }}
+                            title='Add exercise'
+                            onButtonPress={() => openModal()}
+                        />
+                        <View style={{ gap: 20 }}>
+                            {trainingDay.exercises &&
+                                trainingDay?.exercises.map(
+                                    (exercise: Exercise) => (
+                                        <ExerciseListItemSelected
+                                            key={exercise.link_id}
+                                            exercise={{ ...exercise }}
+                                            onRemove={onRemoveExerceiseFromDay}
+                                            isLoading={isStateLoading(
+                                                'remove-exercise-from-training-day' ||
+                                                    'get-exercises-by-training-day-id'
+                                            )}
+                                        />
+                                    )
+                                )}
+                        </View>
+                    </View>
+                )}
+            {isStateLoading(
+                'add-exercise-to-training-day' ||
+                    'get-exercises-by-training-day-id'
+            ) && <ActivityIndicator size='large' color='black' />}
             <MiniModal modalVisible={modalVisible}>
                 <ExerciseSearchModalContent
                     closeModal={closeModal}
                     addExercise={onSubmitExercise}
-                    exerciseList={exerciseList}
+                    exerciseList={toJS(exerciseList)}
                     inputValue={inputValue}
                     setInputValue={setInputValue}
                     isLoading={isStateLoading('searching-exercises')}
@@ -120,35 +168,33 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         width: '100%',
-        backgroundColor: 'lightgray',
-        borderRadius: 20,
-        paddingHorizontal: 20,
-        paddingVertical: 20,
+        backgroundColor: Colors.dark['gray200'],
+        borderRadius: Sizing.borderRadius['md'],
+        paddingHorizontal: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['md'],
+    },
+    titleChip: {
+        backgroundColor: Colors.dark.primary,
+        ...Colors.dark.shadowStyle,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: Sizing.borderRadius['md'],
+        paddingHorizontal: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['sm'],
+        opacity: 0.7,
     },
     title: {
-        fontSize: 20,
-        // textAlign: 'left',
+        fontSize: Sizing.fontSize['lg'],
         fontWeight: '600',
+        alignContent: 'center',
+        color: Colors.dark.text,
     },
-    separator: {
-        backgroundColor: 'black',
-        height: 0.5,
-        width: '100%',
-        marginBottom: 10,
-        marginHorizontal: 10,
-    },
+
     exercisesContainer: {
         width: '100%',
-        backgroundColor: 'lightgray',
-    },
-    exerciseName: {
-        paddingBottom: 10,
-        height: 50,
-        fontSize: 16,
-        fontWeight: '600',
     },
 });
 
-export default TrainingDayAddExerciseItem;
+export default observer(TrainingDayAddExerciseItem);

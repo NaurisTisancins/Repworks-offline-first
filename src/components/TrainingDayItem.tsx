@@ -1,25 +1,76 @@
-import { Exercise, TrainingDay } from '../store/Types';
-import { StyleSheet, Text, View } from 'react-native';
+import Colors from '../constants/Colors';
+import Sizing from '../constants/Sizing';
+import {
+    Exercise,
+    TrainingDay,
+    TrainingDayWithExercises,
+} from '../store/Types';
+import MiniModal from '../components/common/MiniModal';
+import { Pressable, StyleSheet } from 'react-native';
+import { Text, View } from '../components/Themed';
+import { useEffect, useState } from 'react';
+import ButtonPrimary from './common/ButtonPrimary';
+import { observer } from 'mobx-react';
+import { useStore } from '../store';
 
 type WorkoutViewProps = {
-    trainingDay: TrainingDay;
+    trainingDay: TrainingDayWithExercises;
+    modalContent: JSX.Element;
+    modalVisible: boolean;
+    setModalVisible: (visible: boolean) => void;
 };
 
-function TrainingDayItem({ trainingDay }: WorkoutViewProps) {
+function TrainingDayItem({
+    trainingDay,
+    modalContent,
+    modalVisible,
+    setModalVisible,
+}: WorkoutViewProps) {
+    const { getExercisesByTrainingDayId } = useStore();
+
+    async function getExercises() {
+        if (!trainingDay.exercises && trainingDay.day_id) {
+            await getExercisesByTrainingDayId(trainingDay.day_id);
+        }
+    }
+
+    useEffect(() => {
+        getExercises();
+    }, []);
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{trainingDay.day_name}</Text>
-            <View style={styles.separator} />
-            <View style={styles.exercisesContainer}>
-                {/* {trainingDay.exercises.map((exercise: Exercise) => {
-                    return (
-                        <Text style={styles.exerciseName} key={exercise.id}>
-                            {exercise.name}
-                        </Text>
-                    );
-                })} */}
-            </View>
-        </View>
+        <>
+            <Pressable
+                style={styles.container}
+                onLongPress={() => setModalVisible(true)}
+            >
+                <View style={styles.headerContainer}>
+                    <View style={styles.titleChip}>
+                        <Text style={styles.title}>{trainingDay.day_name}</Text>
+                    </View>
+                    <Text style={styles.exerciseCount}>{`${
+                        trainingDay.exercises?.length ?? 0
+                    } exercises`}</Text>
+                </View>
+
+                <View style={styles.exercisesContainer}>
+                    {trainingDay.exercises &&
+                        trainingDay.exercises.map((exercise: Exercise) => {
+                            return (
+                                <Text
+                                    style={styles.exerciseName}
+                                    key={exercise.link_id}
+                                >
+                                    {exercise.exercise_name}
+                                </Text>
+                            );
+                        })}
+                </View>
+            </Pressable>
+            <MiniModal modalVisible={modalVisible}>
+                {modalContent && modalContent}
+            </MiniModal>
+        </>
     );
 }
 
@@ -29,34 +80,59 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        backgroundColor: 'lightgray',
-        borderRadius: 20,
-        paddingHorizontal: 20,
-        paddingVertical: 20,
+        backgroundColor: Colors.dark['gray200'],
+        borderRadius: Sizing.borderRadius['md'],
+        paddingHorizontal: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['md'],
+    },
+    headerContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        backgroundColor: 'transparent',
+        paddingBottom: Sizing.spacing['md'],
+    },
+    titleChip: {
+        backgroundColor: Colors.dark.primary,
+        ...Colors.dark.shadowStyle,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: Sizing.borderRadius['md'],
+        paddingHorizontal: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['sm'],
+        opacity: 0.7,
     },
     title: {
-        fontSize: 20,
-        width: '100%',
+        fontSize: Sizing.fontSize['lg'],
+        fontWeight: '600',
+        alignContent: 'center',
+        color: Colors.dark.text,
+    },
+    exerciseCount: {
+        fontSize: Sizing.fontSize['md'],
         textAlign: 'left',
         fontWeight: '600',
-        paddingBottom: 15,
-    },
-    separator: {
-        backgroundColor: 'black',
-        height: 0.5,
-        width: '100%',
-        marginBottom: 10,
-        marginHorizontal: 10,
+        paddingBottom: Sizing.spacing['md'],
+        color: Colors.dark.accent2,
     },
     exercisesContainer: {
         width: '100%',
-        backgroundColor: 'lightgray',
+        backgroundColor: 'transparent',
     },
     exerciseName: {
-        paddingBottom: 10,
+        paddingBottom: Sizing.spacing['md'],
         fontSize: 16,
         fontWeight: '600',
     },
+
+    textStyle: {
+        color: Colors.dark['gray600'],
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 10,
+        fontSize: 20,
+    },
 });
 
-export default TrainingDayItem;
+export default observer(TrainingDayItem);

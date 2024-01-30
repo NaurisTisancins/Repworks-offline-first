@@ -1,12 +1,11 @@
 import {
-    FieldValues,
     FormProvider,
     SubmitErrorHandler,
     SubmitHandler,
-    useFieldArray,
     useForm,
 } from 'react-hook-form';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text } from '../Themed';
 import { TextInput } from '../common/TextInput';
 import ButtonPrimary from '../common/ButtonPrimary';
 import {
@@ -17,8 +16,11 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useStore } from '../../store';
 import { FormStep } from '../formStepper/FormStepper';
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
+import Colors from '../../constants/Colors';
+import TrainingDayItem from '../TrainingDayItem';
+import Sizing from '../../constants/Sizing';
 
 const validationSchema = z.object({
     day_name: z.string().min(2).max(25),
@@ -35,7 +37,11 @@ const AddTrainingDays = ({
     activeStep,
     setActiveStepDone,
 }: AddTrainingDaysProps) => {
+    const [modalVisible, setModalVisible] = useState(false);
     const [formError, setError] = React.useState<boolean>(false);
+    function closeModal() {
+        setModalVisible(false);
+    }
 
     const onError: SubmitErrorHandler<FormValues> = (errors, e) => {
         return console.log({ errors });
@@ -80,7 +86,9 @@ const AddTrainingDays = ({
         }
     };
     return (
-        <View style={{ height: '100%' }}>
+        <View
+            style={{ height: '100%', backgroundColor: Colors.dark.background }}
+        >
             <FormProvider {...methods}>
                 {formError && (
                     <View>
@@ -91,8 +99,17 @@ const AddTrainingDays = ({
                     </View>
                 )}
 
-                <View style={{ marginBottom: 30 }}>
-                    <View>
+                <View
+                    style={{
+                        marginBottom: Sizing.spacing['md'],
+                        backgroundColor: Colors.dark.background,
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: 'transparent',
+                        }}
+                    >
                         <TextInput
                             name={'day_name'}
                             label='Training day name'
@@ -128,37 +145,55 @@ const AddTrainingDays = ({
                                             fontSize: 16,
                                         }}
                                     >
-                                        Submit
+                                        Add training day
                                     </Text>
                                 )}
                             </ButtonPrimary>
                         )}
                     </View>
 
-                    <ScrollView>
+                    <ScrollView
+                        contentContainerStyle={{
+                            backgroundColor: Colors.dark.background,
+                            gap: Sizing.spacing['md'],
+                            paddingVertical: Sizing.spacing['md'],
+                        }}
+                    >
                         {trainingDays.map((day) => {
                             return (
-                                <View
+                                <TrainingDayItem
                                     key={day.day_id}
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <Text style={{ color: 'white' }}>
-                                        {day.day_name}
-                                    </Text>
-                                    <ButtonPrimary
-                                        title='Remove'
-                                        variant='outlined'
-                                        onButtonPress={() => {
-                                            if (day.day_id) {
-                                                console.log(day.day_id);
-                                            }
-                                        }}
-                                    />
-                                </View>
+                                    trainingDay={day}
+                                    modalVisible={modalVisible}
+                                    setModalVisible={setModalVisible}
+                                    modalContent={
+                                        <>
+                                            <Text style={styles.textStyle}>
+                                                Delete Training Day?
+                                            </Text>
+                                            <View
+                                                style={styles.buttonsContainer}
+                                            >
+                                                <ButtonPrimary
+                                                    title='Delete'
+                                                    variant='danger'
+                                                    onButtonPress={() =>
+                                                        console.log('delete')
+                                                    }
+                                                    width={80}
+                                                />
+                                                <ButtonPrimary
+                                                    title='Cancel'
+                                                    variant='passive'
+                                                    onButtonPress={() =>
+                                                        closeModal()
+                                                    }
+                                                    width={80}
+                                                />
+                                            </View>
+                                        </>
+                                    }
+                                />
                             );
                         })}
                     </ScrollView>
@@ -179,5 +214,24 @@ const AddTrainingDays = ({
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    textStyle: {
+        color: Colors.dark['gray600'],
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 10,
+        fontSize: 20,
+    },
+    buttonsContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        width: '100%',
+        gap: 20,
+    },
+});
 
 export default AddTrainingDays;

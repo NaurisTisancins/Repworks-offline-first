@@ -8,6 +8,8 @@ import {
     TextStyle,
 } from 'react-native';
 import ButtonPrimary from '../common/ButtonPrimary';
+import Sizing from '../../constants/Sizing';
+import Colors from '../../constants/Colors';
 
 type StepProps = {
     step: FormStep;
@@ -20,7 +22,9 @@ const Step = ({ step, active = false, setActive }: StepProps) => {
     const activeStyle: StyleProp<ViewStyle> = {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: `${step.done && 'green'}`,
+        backgroundColor: `${step.done && Colors.dark.success}`,
+        borderWidth: Number(`${active ? 5 : 0}`),
+        borderColor: `${active ? Colors.dark.primary : 'transparent'}`,
         width: 40,
         height: 40,
         borderRadius: 20,
@@ -34,7 +38,7 @@ const Step = ({ step, active = false, setActive }: StepProps) => {
 
     return (
         <ButtonPrimary
-            variant={`${active ? 'primary' : 'outlined'}`}
+            variant={`${'primary'}`}
             style={styles.stepContainer}
             onButtonPress={() => setActive(step)}
         >
@@ -79,23 +83,12 @@ const FormStepper = ({
                                 setActive={setActiveStep}
                                 active={activeStep.value === step.value}
                             />
-                            {index !== steps.length - 1 && <Separator />}
+                            {index !== steps.length - 1 && (
+                                <Separator key={step.value + step.title} />
+                            )}
                         </>
                     );
                 })}
-            </View>
-            <View style={styles.description}>
-                {steps
-                    .filter((step, index) => {
-                        return step.value === activeStep.value;
-                    })
-                    .map((step) => {
-                        return (
-                            <Text style={styles.stepLable}>
-                                {step.description}
-                            </Text>
-                        );
-                    })}
             </View>
         </View>
     );
@@ -103,12 +96,13 @@ const FormStepper = ({
 
 const styles = StyleSheet.create({
     stepperContainer: {
-        marginHorizontal: 14,
+        paddingHorizontal: Sizing.spacing['md'],
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        height: 'auto',
-        marginBottom: 10,
+        height: 100,
+        paddingTop: Sizing.spacing['lg'],
+        paddingBottom: Sizing.spacing['md'],
     },
     description: {
         flexDirection: 'row',
@@ -120,19 +114,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'transparent',
-        borderRadius: 20,
+        borderRadius: Sizing.borderRadius['lg'],
         gap: 10,
     },
     stepLable: {
-        color: 'white',
-        fontSize: 24,
+        color: Colors.dark.text,
+        fontSize: Sizing.fontSize['lg'],
         fontWeight: '600',
     },
     stepSeparator: {
-        backgroundColor: 'white',
+        backgroundColor: Colors.dark['gray450'],
         width: '10%',
         height: 2,
-        borderRadius: 2,
+        borderRadius: 10,
+        opacity: 0.5,
         // marginTop: 20,
     },
 });

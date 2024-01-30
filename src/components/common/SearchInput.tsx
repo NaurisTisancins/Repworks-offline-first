@@ -10,6 +10,8 @@ import {
 import React from 'react';
 import MiniModal from './MiniModal';
 import Icon from './Icon';
+import Colors from '../../constants/Colors';
+import Sizing from '../../constants/Sizing';
 
 interface SearchInputProps {
     name: string;
@@ -69,8 +71,8 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        color: 'black',
-        marginBottom: 10,
+        color: Colors.dark.textSecondary,
+        marginBottom: Sizing.spacing['sm'],
         marginLeft: 0,
     },
     input: {
@@ -80,6 +82,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 4,
         borderWidth: 1,
+        borderColor: Colors.dark.gray400,
         marginBottom: 10,
     },
 });

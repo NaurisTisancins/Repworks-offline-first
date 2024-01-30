@@ -1,13 +1,23 @@
-import { View, StyleSheet, SafeAreaView, Text } from 'react-native';
+import {
+    StyleSheet,
+    SafeAreaView,
+    Dimensions,
+    ViewProps,
+    ViewStyle,
+} from 'react-native';
+import { View, Text } from '../../components/Themed';
 import CreateRoutineForm from '../../components/createRoutineFlow/CreateRoutineForm';
 import AddTrainingDays from '../../components/createRoutineFlow/AddTrainingDays';
 import AddExercises from '../../components/createRoutineFlow/AddExercises';
 import FormStepper, {
     FormStep,
 } from '../../components/formStepper/FormStepper';
-import React from 'react';
+import React, { useState } from 'react';
 import ButtonPrimary from '../../components/common/ButtonPrimary';
 import { useStore } from '../../store';
+import { useRouter } from 'expo-router';
+import Colors from '../../constants/Colors';
+import Sizing from '../../constants/Sizing';
 
 const formSteps: FormStep[] = [
     {
@@ -26,7 +36,7 @@ const formSteps: FormStep[] = [
         title: 'Step 3',
         description: 'Add Exercises',
         value: 3,
-        done: false,
+        done: true,
     },
     {
         title: 'Step 4',
@@ -40,6 +50,11 @@ const CreateRoutineRoutineScreen = () => {
     const [steps, setSteps] = React.useState<FormStep[]>(formSteps);
     const [activeStep, setActiveStep] = React.useState<FormStep>(steps[0]);
     const { selectedRoutine, deleteRoutineById } = useStore();
+    const router = useRouter();
+    const [windowDimensions, setWindowDimensions] = useState({
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+    });
 
     function setActiveStepDone(step: FormStep) {
         const updatedSteps = steps.map((step) => {
@@ -96,7 +111,11 @@ const CreateRoutineRoutineScreen = () => {
                 return (
                     <ButtonPrimary
                         title='Confirm'
-                        onButtonPress={() => console.log('confirm')}
+                        onButtonPress={() =>
+                            router.push(
+                                `/routine/${selectedRoutine?.routine_id}`
+                            )
+                        }
                     />
                 );
         }
@@ -105,14 +124,13 @@ const CreateRoutineRoutineScreen = () => {
     const isFirstStep = activeStep.value === 1;
     const isLastStep = activeStep.value === steps.length;
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <FormStepper
-                steps={steps}
-                setActiveStep={setActive}
-                activeStep={activeStep}
-            />
+    const container: ViewStyle = {
+        height: windowDimensions.height,
+        backgroundColor: Colors.dark.background,
+    };
 
+    return (
+        <SafeAreaView style={container}>
             <View style={styles.formContainer}>{switchFormView()}</View>
 
             <View style={styles.formNavigationButtons}>
@@ -129,17 +147,15 @@ const CreateRoutineRoutineScreen = () => {
                     <View style={{ flex: 1 }} />
                 )}
                 {!isLastStep ? (
-                    <>
-                        <ButtonPrimary
-                            width={100}
-                            disabled={!activeStep.done}
-                            variant='outlined'
-                            title='Next'
-                            onButtonPress={() => {
-                                nextStep();
-                            }}
-                        />
-                    </>
+                    <ButtonPrimary
+                        width={100}
+                        disabled={!activeStep.done}
+                        variant='outlined'
+                        title='Next'
+                        onButtonPress={() => {
+                            nextStep();
+                        }}
+                    />
                 ) : (
                     <View style={{ flex: 1 }} />
                 )}
@@ -149,29 +165,23 @@ const CreateRoutineRoutineScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        height: '100%',
-        backgroundColor: 'black',
-        marginHorizontal: 14,
-        marginVertical: 30,
-        gap: 10,
-    },
     formContainer: {
-        backgroundColor: 'black',
-        marginHorizontal: 14,
-        marginVertical: 10,
+        backgroundColor: 'transparent',
+        paddingHorizontal: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['md'],
     },
     formNavigationButtons: {
         position: 'absolute',
-        bottom: 100,
+        bottom: 90,
         right: 0,
         left: 0,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: 'auto',
-        marginHorizontal: 14,
-        marginVertical: 10,
+        height: 100,
+        paddingHorizontal: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['md'],
+        backgroundColor: Colors.dark['background'],
     },
 });
 

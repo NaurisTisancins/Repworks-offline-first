@@ -18,4 +18,5 @@ export const routeConfig = {
         `/exercises/${excerciseId}/${trainingDayId}`,
     getExercisesByTrainingDayId: (trainingDayId: string) =>
         `/exercises/${trainingDayId}`,
+    removeExerciseFromTrainingDay: (link_id: string) => `/exercises/${link_id}`,
 };

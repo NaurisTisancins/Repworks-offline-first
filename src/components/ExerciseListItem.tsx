@@ -1,8 +1,30 @@
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+    runOnJS,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+    withTiming,
+} from 'react-native-reanimated';
 import { Exercise } from '../store/Types';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, ViewStyle, Dimensions } from 'react-native';
+
+const ITEM_HEIGHT = 30;
+const WIDTH_SCREEN = Dimensions.get('window').width;
+
+const SHADOW = {
+    shadowColor: 'black',
+    shadowOffset: {
+        width: 0,
+        height: 10,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+};
 
 type ExerciseListItemProps = {
     exercise: Exercise;
+    onRemove?: (id: string) => void;
 };
 
 const tags = ['Upper', 'Lower', 'Push', 'Pull', 'Core'];
@@ -43,12 +65,51 @@ const generateTag = (tags: string[]) => {
     ));
 };
 
-const ExerciseListItem = ({ exercise }: ExerciseListItemProps) => {
+const ExerciseListItem = ({ exercise, onRemove }: ExerciseListItemProps) => {
+    const swipeTranslateX = useSharedValue(0);
+    const pressed = useSharedValue(false);
+    const itemHeight = useSharedValue(ITEM_HEIGHT);
+    const marginVertical = useSharedValue(20);
+
+    function onRemoveExerceise(exerciseId: string) {
+        // console.log(exerciseId);
+    }
+
+    const pan = Gesture.Pan()
+        .onBegin(() => {
+            pressed.value = true;
+        })
+        .onChange((event) => {
+            if (event.translationX < 0) {
+                swipeTranslateX.value = event.translationX;
+            }
+        })
+        .onFinalize(() => {
+            const isShouldDismiss = swipeTranslateX.value < -WIDTH_SCREEN * 0.3;
+            if (isShouldDismiss) {
+                itemHeight.value = withTiming(0);
+                marginVertical.value = withTiming(0);
+                swipeTranslateX.value = withTiming(
+                    -WIDTH_SCREEN,
+                    undefined,
+                    (isDone) => {
+                        if (isDone && exercise.link_id) {
+                            runOnJS(onRemoveExerceise)(exercise.exercise_id);
+                        }
+                    }
+                );
+            } else {
+                swipeTranslateX.value = withSpring(0);
+            }
+            pressed.value = false;
+        });
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{exercise.exercise_name}</Text>
-            <View style={styles.tagSection}>{generateTag(tags)}</View>
-        </View>
+        <GestureDetector gesture={pan}>
+            <View style={styles.container}>
+                <Text style={styles.title}>{exercise.exercise_name}</Text>
+                <View style={styles.tagSection}>{generateTag(tags)}</View>
+            </View>
+        </GestureDetector>
     );
 };
 

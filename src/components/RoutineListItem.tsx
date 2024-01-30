@@ -1,20 +1,15 @@
 import { Routine } from '../store/Types';
-import {
-    StyleSheet,
-    View,
-    Text,
-    Pressable,
-    StyleProp,
-    ViewStyle,
-} from 'react-native';
+import { StyleSheet, Pressable, StyleProp, ViewStyle } from 'react-native';
+import { Text, View } from '../components/Themed';
 import { useStore } from '../store/index';
 import { router } from 'expo-router';
+import Colors from '../constants/Colors';
 
 type RoutineProps = {
     routine: Routine;
 };
 
-export default function RoutineListItem({ routine }: RoutineProps) {
+export default function RoutineListItem({ routine }: Readonly<RoutineProps>) {
     const { setActiveRoutines, setSelectedRoutine } = useStore();
     // const numberOfTrainingDays = routine.length;
 
@@ -26,7 +21,7 @@ export default function RoutineListItem({ routine }: RoutineProps) {
     const activeStyle: StyleProp<ViewStyle> = {
         height: 50,
         width: '100%',
-        backgroundColor: `${routine.is_active === true ? 'teal' : 'lightgray'}`,
+        backgroundColor: `${Colors.dark['gray200']}`,
         borderRadius: 20,
         padding: 15,
     };
@@ -35,6 +30,11 @@ export default function RoutineListItem({ routine }: RoutineProps) {
         <Pressable onPress={onSelect} style={activeStyle}>
             <View style={styles.header}>
                 <Text style={styles.title}>{routine.name}</Text>
+                {routine.is_active && (
+                    <View style={{ backgroundColor: 'transparent' }}>
+                        <Text style={{ color: Colors.dark.text }}>Active</Text>
+                    </View>
+                )}
                 {/* <Text>{numberOfTrainingDays} day split</Text> */}
             </View>
         </Pressable>
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         justifyContent: 'space-between',
+        backgroundColor: 'transparent',
     },
     title: {
         fontSize: 16,

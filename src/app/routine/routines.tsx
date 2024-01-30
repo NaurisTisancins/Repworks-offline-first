@@ -1,11 +1,16 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View } from '../../components/Themed';
 import RoutineList from '../../components/RoutineList';
 import ButtonPrimary from '../../components/common/ButtonPrimary';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Colors from '../../constants/Colors';
+import { useStore } from '../../store';
 
 const RoutineListScreen = () => {
+    const { setSelectedRoutine } = useStore();
+
     return (
         <SafeAreaView style={styles.container}>
             <RoutineList />
@@ -15,10 +20,14 @@ const RoutineListScreen = () => {
                     left: 0,
                     position: 'absolute',
                     bottom: 100,
+                    backgroundColor: 'transparent',
+                    paddingHorizontal: 14,
                 }}
             >
                 <ButtonPrimary
                     onButtonPress={() => {
+                        setSelectedRoutine(null);
+
                         router.push('/routine/createRoutine');
                     }}
                     title='Create a new routine'
@@ -30,9 +39,9 @@ const RoutineListScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'black',
+        backgroundColor: Colors.dark['background'],
         height: '100%',
-        marginHorizontal: 14,
+        paddingHorizontal: 14,
     },
 });
 

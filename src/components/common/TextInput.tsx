@@ -1,12 +1,12 @@
 import React from 'react';
 
 import {
-    View,
     TextInput as RNTextInput,
     TextInputProps as RNTextInputProps,
-    Text,
     StyleSheet,
 } from 'react-native';
+
+import { View, Text } from '../../components/Themed';
 
 import {
     useController,
@@ -14,6 +14,8 @@ import {
     ControllerProps,
     UseControllerProps,
 } from 'react-hook-form';
+import Sizing from '../../constants/Sizing';
+import Colors from '../../constants/Colors';
 
 interface TextInputProps extends RNTextInputProps, UseControllerProps {
     label: string;
@@ -46,7 +48,7 @@ const ControlledInput = (props: TextInputProps) => {
     return (
         <View style={styles.container}>
             {label && <Text style={lableStyle}>{label}</Text>}
-            <View>
+            <View style={{ backgroundColor: Colors.dark.background }}>
                 <RNTextInput
                     autoCapitalize='none'
                     textAlign='left'
@@ -90,31 +92,35 @@ export const TextInput = (props: TextInputProps) => {
 
 const styles = StyleSheet.create({
     label: {
-        color: 'white',
-        marginBottom: 10,
+        color: Colors.dark.grayText,
+        fontSize: Sizing.fontSize['md'],
+        marginBottom: Sizing.spacing['sm'],
         marginLeft: 0,
     },
     container: {
         flex: -1,
         justifyContent: 'center',
+        backgroundColor: Colors.dark.background,
     },
     input: {
-        backgroundColor: 'white',
+        backgroundColor: Colors.dark.gray100,
         height: 40,
-        padding: 10,
-        borderRadius: 4,
+        paddingHorizontal: Sizing.spacing['md'],
+        borderRadius: Sizing.borderRadius['xs'],
     },
     multiLineInput: {
-        backgroundColor: 'white',
+        backgroundColor: Colors.dark.gray100,
         minHeight: 80,
-        padding: 10,
-        borderRadius: 4,
+        paddingHorizontal: Sizing.spacing['md'],
+        borderRadius: Sizing.borderRadius['xs'],
     },
     errorContainer: {
         flex: -1,
         height: 25,
+        backgroundColor: Colors.dark.background,
     },
     error: {
+        backgroundColor: Colors.dark.background,
         color: 'red',
     },
 });

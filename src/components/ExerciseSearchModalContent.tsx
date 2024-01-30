@@ -1,8 +1,17 @@
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import {
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    Dimensions,
+} from 'react-native';
+import { View, Text } from '../components/Themed';
 import SearchInput from './common/SearchInput';
 import Icon from './common/Icon';
 import { Exercise } from '../store/Types';
-import ExerciseListItem from './ExerciseListItem';
+import ExerciseListItem from './ExerciseListItemSelected';
+import Sizing from '../constants/Sizing';
+import { useState } from 'react';
+import Animated from 'react-native-reanimated';
 
 type ExerciseSearchProps = {
     closeModal: () => void;
@@ -21,6 +30,10 @@ const ExerciseSearchModalContent = ({
     isLoading,
     exerciseList,
 }: ExerciseSearchProps) => {
+    const [windowDimensions, setWindowDimensions] = useState({
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+    });
     return (
         <>
             <View
@@ -28,6 +41,7 @@ const ExerciseSearchModalContent = ({
                     display: 'flex',
                     alignItems: 'flex-end',
                     width: '100%',
+                    backgroundColor: 'transparent',
                 }}
             >
                 <Icon
@@ -40,6 +54,7 @@ const ExerciseSearchModalContent = ({
 
             <View
                 style={{
+                    backgroundColor: 'transparent',
                     width: '100%',
                     height: '100%',
                 }}
@@ -51,7 +66,6 @@ const ExerciseSearchModalContent = ({
                     keyboardType='default'
                     onChange={(e) => {
                         setInputValue(e.nativeEvent.text);
-                        console.log(e.nativeEvent.text);
                     }}
                     rules={{
                         required: 'Training day name is Required!',
@@ -61,42 +75,51 @@ const ExerciseSearchModalContent = ({
                     // setFormError={setError}
                     value={inputValue}
                 />
-
-                <ScrollView
-                    contentContainerStyle={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        justifyContent: 'flex-start',
+                <View
+                    style={{
                         width: '100%',
-                        height: '100%',
-                        // backgroundColor: 'lightgray',
-                        // borderRadius: 20,
-                        paddingHorizontal: 10,
-                        paddingVertical: 20,
+                        height: windowDimensions.height * 0.78,
+                        backgroundColor: 'transparent',
+                        paddingVertical: Sizing.spacing['md'],
                     }}
                 >
-                    {isLoading && (
-                        <ActivityIndicator size='large' color='black' />
-                    )}
-                    {!isLoading &&
-                        exerciseList.length > 0 &&
-                        exerciseList.map((item: Exercise) => {
-                            return (
-                                <Pressable
-                                    key={item.exercise_id}
-                                    style={{
-                                        width: '100%',
-                                    }}
-                                    onPress={() => {
-                                        addExercise(item);
-                                        closeModal();
-                                    }}
-                                >
-                                    <ExerciseListItem exercise={item} />
-                                </Pressable>
-                            );
-                        })}
-                </ScrollView>
+                    <Animated.ScrollView
+                        contentContainerStyle={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'flex-start',
+                            paddingVertical: Sizing.spacing['md'],
+                            gap: Sizing.spacing['md'],
+                        }}
+                    >
+                        {isLoading && (
+                            <ActivityIndicator size='large' color='black' />
+                        )}
+                        {!isLoading &&
+                            exerciseList.length > 0 &&
+                            exerciseList.map((item: Exercise) => {
+                                return (
+                                    <Pressable
+                                        key={item.exercise_id}
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        onPress={() => {
+                                            addExercise(item);
+                                            closeModal();
+                                        }}
+                                    >
+                                        <ExerciseListItem
+                                            exercise={item}
+                                            onRemove={() =>
+                                                console.log('remove')
+                                            }
+                                        />
+                                    </Pressable>
+                                );
+                            })}
+                    </Animated.ScrollView>
+                </View>
             </View>
         </>
     );

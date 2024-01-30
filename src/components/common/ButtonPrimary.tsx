@@ -11,10 +11,11 @@ import {
     PressableStateCallbackType,
     PressableProps,
 } from 'react-native';
+import Colors from '../../constants/Colors';
 
 type ButtonProps = {
     title?: string;
-    variant?: 'primary' | 'outlined';
+    variant?: 'primary' | 'outlined' | 'danger' | 'passive';
     disabled?: boolean;
     onButtonPress: () => void;
     width?: DimensionValue | undefined;
@@ -34,6 +35,16 @@ export default function ButtonPrimary({
     style,
 }: ButtonProps) {
     const buttonVariantStyles = (pressed: boolean): StyleProp<ViewStyle> => {
+        const disabledStyle: string = Colors.dark['gray300'];
+
+        const backgroundColorPrimary = pressed
+            ? Colors.dark.accent7
+            : Colors.dark.primary;
+
+        const backgroundColorOutlined = pressed
+            ? Colors.dark.gray400
+            : Colors.dark.background;
+
         const baseStyle: StyleProp<ViewStyle> = {
             display: 'flex',
             alignItems: 'center',
@@ -41,12 +52,9 @@ export default function ButtonPrimary({
             width: width,
             height: height,
             borderRadius: 8,
+            ...Colors.dark.shadowStyle,
             ...(style as object),
         };
-
-        const disabledStyle: string = 'lightblue';
-
-        const backgroundColorPrimary = pressed ? 'coral' : 'teal';
 
         switch (variant) {
             case 'primary':
@@ -59,9 +67,25 @@ export default function ButtonPrimary({
             case 'outlined':
                 return {
                     ...baseStyle,
-                    backgroundColor: disabled ? disabledStyle : 'black',
+                    backgroundColor: disabled
+                        ? disabledStyle
+                        : backgroundColorOutlined,
                     borderWidth: 2,
-                    borderColor: 'teal',
+                    borderColor: Colors.dark.primary,
+                };
+            case 'danger':
+                return {
+                    ...baseStyle,
+                    backgroundColor: disabled
+                        ? disabledStyle
+                        : Colors.dark.danger,
+                };
+            case 'passive':
+                return {
+                    ...baseStyle,
+                    backgroundColor: disabled
+                        ? disabledStyle
+                        : Colors.dark['gray'],
                 };
         }
     };
