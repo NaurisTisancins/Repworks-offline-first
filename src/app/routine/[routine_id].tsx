@@ -1,8 +1,7 @@
-import { StyleSheet, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { View, Text } from '../../components/Themed';
 import { useStore } from '../../store';
 import TrainingDayItem from '../../components/TrainingDayItem';
-import MiniModal from '../../components/common/MiniModal';
 import { useEffect, useState } from 'react';
 import { TrainingDay, TrainingDayWithExercises } from '../../store/Types';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -16,22 +15,25 @@ function RoutineScreen() {
     const [selectedDay, setSelectedDay] = useState<TrainingDay | null>();
     const { routine_id } = useLocalSearchParams();
     const {
-        selectedRoutine,
-        setSelectedRoutineById,
-        setCurrentTrainingDay,
-        createSession,
-        trainingDays,
-        getTrainingDays,
+        RoutineStore: {
+            selectedRoutine,
+            setSelectedRoutineById,
+            setCurrentTrainingDay,
+            trainingDays,
+            getTrainingDaysWithExercises,
+        },
     } = useStore();
 
     const getTrainingDaysList = async () => {
-        if (!selectedRoutine) {
-            setSelectedRoutineById(routine_id as string);
+        if (selectedRoutine) {
+            await getTrainingDaysWithExercises(
+                selectedRoutine.routine_id as string
+            );
         }
-        await getTrainingDays(routine_id as string);
     };
 
     useEffect(() => {
+        setSelectedRoutineById(routine_id as string);
         getTrainingDaysList();
     }, [routine_id]);
 
@@ -47,7 +49,7 @@ function RoutineScreen() {
     function startSession() {
         if (!selectedDay) return;
         selectedDay.day_id && setCurrentTrainingDay(selectedDay.day_id);
-        createSession();
+        // createSession();
         router.push('/routine/session');
         closeModal();
     }
@@ -61,14 +63,8 @@ function RoutineScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            {/* <Text style={{ color: 'white' }}>
-                {JSON.stringify(trainingDays, null, 2)}
-            </Text> */}
-
-            <MiniModal modalVisible={modalVisible}></MiniModal>
             <View style={styles.trainingDayContainer}>
                 <Text style={styles.name}>{selectedRoutine.name}</Text>
-
                 {trainingDays && trainingDays.length > 0 ? (
                     trainingDays.map((item: TrainingDayWithExercises) => {
                         return (

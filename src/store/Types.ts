@@ -1,6 +1,6 @@
 // data types
 export interface Routine {
-    routine_id?: string;
+    routine_id: string;
     name: string;
     description: string;
     is_active: boolean;
@@ -10,6 +10,7 @@ export interface Routine {
 export type CreateRoutinePayload = {
     name: string;
     description: string;
+    is_active: boolean;
 };
 
 export interface TrainingDay {

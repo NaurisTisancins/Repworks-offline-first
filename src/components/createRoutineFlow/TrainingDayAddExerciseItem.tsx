@@ -1,12 +1,7 @@
-import {
-    Exercise,
-    TrainingDay,
-    TrainingDayWithExercises,
-} from '../../store/Types';
+import { Exercise, TrainingDayWithExercises } from '../../store/Types';
 import {
     ActivityIndicator,
     Pressable,
-    ScrollView,
     StyleSheet,
     Text,
     View,
@@ -22,14 +17,16 @@ import ExerciseListItemSelected from '../ExerciseListItemSelected';
 import Colors from '../../constants/Colors';
 import Sizing from '../../constants/Sizing';
 import { toJS } from 'mobx';
-import { set } from 'react-hook-form';
 import { observer } from 'mobx-react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type AddExercisesProps = {
     trainingDay: TrainingDayWithExercises;
 };
 
-function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
+function TrainingDayAddExerciseItem({
+    trainingDay,
+}: Readonly<AddExercisesProps>) {
     const [modalVisible, setModalVisible] = React.useState(false);
     function openModal() {
         setModalVisible(true);
@@ -43,12 +40,14 @@ function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
     const [exerciseFormVisible, setExerciseFormVisible] = React.useState(false);
 
     const {
-        isStateLoading,
-        searchExercises,
-        exerciseList,
-        addExerciseToTrainingDay,
-        getExercisesByTrainingDayId,
-        removeExerciseFromTrainingDay,
+        RoutineStore: {
+            isStateLoading,
+            searchExercises,
+            exerciseList,
+            addExerciseToTrainingDay,
+            getExercisesByTrainingDayId,
+            removeExerciseFromTrainingDay,
+        },
     } = useStore();
 
     async function searchExerciseList() {
@@ -93,59 +92,54 @@ function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
 
     return (
         <View style={styles.container}>
-            <Pressable
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    width: '100%',
-                }}
-                onPress={() => {
-                    setExerciseFormVisible(!exerciseFormVisible);
-                }}
-            >
-                <View style={styles.titleChip}>
-                    <Text style={styles.title}>{trainingDay.day_name}</Text>
+            <View>
+                <View
+                    style={{
+                        gap: Sizing.spacing['md'],
+                        backgroundColor: 'transparent',
+                    }}
+                >
+                    <View style={styles.titleChip}>
+                        <Text style={styles.title}>{trainingDay.day_name}</Text>
+                    </View>
+
+                    <ButtonPrimary
+                        title='Add exercise'
+                        onButtonPress={() => openModal()}
+                    />
                 </View>
 
-                <View style={{}}>
+                <Pressable
+                    style={{
+                        paddingTop: Sizing.spacing['md'],
+                        width: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                        setExerciseFormVisible(!exerciseFormVisible);
+                    }}
+                >
                     {exerciseFormVisible ? (
                         <Icon name='chevron-up' size={18} color='black' />
                     ) : (
                         <Icon name='chevron-down' size={18} color='black' />
                     )}
-                </View>
-            </Pressable>
+                </Pressable>
+            </View>
 
-            {!isStateLoading(
-                'add-exercise-to-training-day' ||
-                    'get-exercises-by-training-day-id'
-            ) &&
-                exerciseFormVisible && (
-                    <View style={styles.exercisesContainer}>
-                        <ButtonPrimary
-                            style={{ marginVertical: Sizing.spacing['lg'] }}
-                            title='Add exercise'
-                            onButtonPress={() => openModal()}
-                        />
-                        <View style={{ gap: 20 }}>
-                            {trainingDay.exercises &&
-                                trainingDay?.exercises.map(
-                                    (exercise: Exercise) => (
-                                        <ExerciseListItemSelected
-                                            key={exercise.link_id}
-                                            exercise={{ ...exercise }}
-                                            onRemove={onRemoveExerceiseFromDay}
-                                            isLoading={isStateLoading(
-                                                'remove-exercise-from-training-day' ||
-                                                    'get-exercises-by-training-day-id'
-                                            )}
-                                        />
-                                    )
-                                )}
-                        </View>
-                    </View>
-                )}
+            {exerciseFormVisible && (
+                <View style={styles.exercisesContainer}>
+                    {trainingDay.exercises &&
+                        trainingDay?.exercises.map((exercise: Exercise) => (
+                            <ExerciseListItemSelected
+                                key={exercise.link_id}
+                                exercise={{ ...exercise }}
+                                onRemove={onRemoveExerceiseFromDay}
+                            />
+                        ))}
+                </View>
+            )}
             {isStateLoading(
                 'add-exercise-to-training-day' ||
                     'get-exercises-by-training-day-id'
@@ -166,27 +160,25 @@ function TrainingDayAddExerciseItem({ trainingDay }: AddExercisesProps) {
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        width: '100%',
         backgroundColor: Colors.dark['gray200'],
         borderRadius: Sizing.borderRadius['md'],
         paddingHorizontal: Sizing.spacing['md'],
-        paddingVertical: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['lg'],
+        height: 'auto',
     },
     titleChip: {
-        backgroundColor: Colors.dark.primary,
+        backgroundColor: Colors.dark.gray600,
         ...Colors.dark.shadowStyle,
-        alignItems: 'center',
+        alignSelf: 'flex-start',
         justifyContent: 'center',
-        borderRadius: Sizing.borderRadius['md'],
-        paddingHorizontal: Sizing.spacing['md'],
+        borderRadius: Sizing.borderRadius['sm'],
+        paddingHorizontal: Sizing.spacing['sm'],
         paddingVertical: Sizing.spacing['sm'],
+
         opacity: 0.7,
     },
     title: {
-        fontSize: Sizing.fontSize['lg'],
+        fontSize: Sizing.fontSize['md'],
         fontWeight: '600',
         alignContent: 'center',
         color: Colors.dark.text,
@@ -194,6 +186,8 @@ const styles = StyleSheet.create({
 
     exercisesContainer: {
         width: '100%',
+        gap: 20,
+        paddingTop: Sizing.spacing['md'],
     },
 });
 

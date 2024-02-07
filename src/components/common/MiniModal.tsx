@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: Sizing.spacing['xxl3'],
+        marginVertical: Sizing.spacing['xxxl'],
     },
     modalView: {
         width: '90%',
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
         padding: Sizing.spacing['md'],
         alignItems: 'center',
         shadowColor: '#000',
+
         shadowOffset: {
             width: 2,
             height: 2,

@@ -6,13 +6,22 @@ import ButtonPrimary from './common/ButtonPrimary';
 import { router } from 'expo-router';
 
 function ActiveRoutineView() {
-    const { activeRoutine } = useStore();
+    const {
+        RoutineStore: { activeRoutines },
+    } = useStore();
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Current Routine</Text>
-            {activeRoutine ? (
-                <ActiveRoutineListItem routine={activeRoutine} />
+            {activeRoutines.length > 0 ? (
+                <View>
+                    {activeRoutines.map((routine) => (
+                        <ActiveRoutineListItem
+                            routine={routine}
+                            key={routine.routine_id}
+                        />
+                    ))}
+                </View>
             ) : (
                 <View>
                     <Text style={styles.noRoutines}>

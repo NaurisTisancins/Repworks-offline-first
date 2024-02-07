@@ -4,17 +4,30 @@ import { Text, View } from '../components/Themed';
 import { useStore } from '../store/index';
 import { router } from 'expo-router';
 import Colors from '../constants/Colors';
+import Sizing from '../constants/Sizing';
+import { useEffect } from 'react';
 
 type RoutineProps = {
     routine: Routine;
 };
 
 export default function RoutineListItem({ routine }: Readonly<RoutineProps>) {
-    const { setActiveRoutines, setSelectedRoutine } = useStore();
-    // const numberOfTrainingDays = routine.length;
+    const {
+        RoutineStore: {
+            setSelectedRoutine,
+            getTrainingDaysWithExercises,
+            getTrainingDays,
+            trainingDays,
+        },
+    } = useStore();
+
+    useEffect(() => {
+        getTrainingDays(routine.routine_id);
+    }, []);
 
     function onSelect(): void {
         setSelectedRoutine(routine);
+        getTrainingDaysWithExercises(routine.routine_id);
         router.push(`/routine/${routine.routine_id}`);
     }
 
@@ -29,30 +42,46 @@ export default function RoutineListItem({ routine }: Readonly<RoutineProps>) {
     return (
         <Pressable onPress={onSelect} style={activeStyle}>
             <View style={styles.header}>
-                <Text style={styles.title}>{routine.name}</Text>
-                {routine.is_active && (
-                    <View style={{ backgroundColor: 'transparent' }}>
-                        <Text style={{ color: Colors.dark.text }}>Active</Text>
-                    </View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>{routine.name}</Text>
+                    {routine.is_active && (
+                        <Text
+                            style={{
+                                color: Colors.dark.gray600,
+                                backgroundColor: 'transparent',
+                                fontSize: Sizing.fontSize['xs'],
+                                verticalAlign: 'top',
+                            }}
+                        >
+                            Active
+                        </Text>
+                    )}
+                </View>
+                {trainingDays.length > 0 && (
+                    <Text>{trainingDays.length} day split</Text>
                 )}
-                {/* <Text>{numberOfTrainingDays} day split</Text> */}
             </View>
         </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {},
-
     header: {
-        flex: 1,
+        backgroundColor: 'transparent',
+        display: 'flex',
         flexDirection: 'row',
-        width: '100%',
+        alignItems: 'center',
         justifyContent: 'space-between',
+        width: '100%',
+    },
+    titleContainer: {
+        flexDirection: 'row',
+        gap: Sizing.spacing['xs'],
         backgroundColor: 'transparent',
     },
     title: {
-        fontSize: 16,
+        color: Colors.dark.gray600,
+        fontSize: Sizing.fontSize['md'],
         fontWeight: '600',
     },
 });

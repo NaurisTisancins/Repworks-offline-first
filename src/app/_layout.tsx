@@ -1,16 +1,11 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {
-    DarkTheme,
-    DefaultTheme,
-    ThemeProvider,
-} from '@react-navigation/native';
+import { DarkTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { Pressable, useColorScheme } from 'react-native';
-import { RoutineStoreProvider, useStore } from '../store/index';
+import { RoutineStoreProvider } from '../store/index';
 import { Text } from '../components/Themed';
-import { set } from 'react-hook-form';
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -51,7 +46,6 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
     const colorScheme = useColorScheme();
-    const { selectedRoutine, setSelectedRoutine, clearStoredData } = useStore();
 
     return (
         // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>

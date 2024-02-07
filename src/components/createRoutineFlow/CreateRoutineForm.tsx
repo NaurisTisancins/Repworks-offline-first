@@ -26,25 +26,34 @@ export interface FormValues extends FieldValues {
 type CreateRoutineFormProps = {
     activeStep: FormStep;
     setActiveStepDone: (step: FormStep) => void;
+    next: () => void;
 };
 
 const CreateRoutineForm = ({
     setActiveStepDone,
     activeStep,
+    next,
 }: CreateRoutineFormProps) => {
-    const [formError, setError] = React.useState<boolean>(false);
+    const [error, setError] = React.useState<boolean>(false);
 
     const onError: SubmitErrorHandler<FormValues> = (errors, e) => {
         return console.log({ errors });
     };
-    const { selectedRoutine, createRoutine, getRoutines, isStateLoading } =
-        useStore();
+    const {
+        RoutineStore: {
+            selectedRoutine,
+            createRoutine,
+            updateRoutine,
+            getRoutines,
+            isStateLoading,
+        },
+    } = useStore();
 
     const { ...methods } = useForm<FormValues>({
         defaultValues: {
-            name: selectedRoutine?.name || '',
-            description: selectedRoutine?.description || '',
-            isActive: selectedRoutine?.is_active || false,
+            name: selectedRoutine?.name ?? '',
+            description: selectedRoutine?.description ?? '',
+            isActive: selectedRoutine?.is_active ?? false,
         },
         mode: 'onChange',
     });
@@ -64,17 +73,33 @@ const CreateRoutineForm = ({
             is_active: data.isActive,
         };
 
-        const result = await createRoutine(routineData);
-        if (result) {
-            setActiveStepDone(activeStep);
-            getRoutines();
+        if (selectedRoutine?.routine_id) {
+            // Update Routine
+            const result = await updateRoutine({
+                ...routineData,
+                routine_id: selectedRoutine?.routine_id,
+            });
+            if (result) {
+                setActiveStepDone(activeStep);
+                getRoutines();
+                next();
+            }
+        } else {
+            const result = await createRoutine({
+                ...routineData,
+            });
+            if (result) {
+                setActiveStepDone(activeStep);
+                getRoutines();
+                next();
+            }
         }
     };
 
     return (
         <View style={styles.container}>
             <FormProvider {...methods}>
-                {formError ? (
+                {error ? (
                     <View>
                         <Text style={{ color: 'red' }}>
                             There was a problem with loading the form. Please
@@ -151,7 +176,9 @@ const CreateRoutineForm = ({
                                         fontSize: 16,
                                     }}
                                 >
-                                    Submit Routine
+                                    {selectedRoutine?.routine_id
+                                        ? 'Submit Changes'
+                                        : 'Submit Routine'}
                                 </Text>
                             )}
                         </ButtonPrimary>

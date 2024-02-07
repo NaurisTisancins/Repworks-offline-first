@@ -3,13 +3,13 @@ import { useStore } from '../../store';
 import { router } from 'expo-router';
 
 import ButtonPrimary from '../../components/common/ButtonPrimary';
-import SessionForm from '../../components/SessionForm';
+// import SessionForm from '../../components/SessionForm';
 
 function SessionScreen() {
-    const { currentTrainingDay, saveSession } = useStore();
+    // const { currentTrainingDay, saveSession } = useStore();
 
     function saveSessionToStore() {
-        saveSession();
+        // saveSession();
         router.replace('/');
     }
 

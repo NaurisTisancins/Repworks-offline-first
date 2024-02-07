@@ -3,16 +3,19 @@ import { StyleSheet } from 'react-native';
 import { Text, View } from '../../components/Themed';
 import { useStore } from '../../store';
 
+import SwipeGesture from '../../components/common/SwipeableItemTest';
+
 export default function TabTwoScreen() {
-    const { activeRoutine } = useStore();
+    // const { activeRoutine } = useStore();
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>
+            <SwipeGesture />
+            {/* <Text style={styles.title}>
                 {activeRoutine
                     ? activeRoutine.name
                     : 'There are no Active Routines'}
-            </Text>
+            </Text> */}
             {/* <View>
         {activeRoutine?.trainingPlan.map((trainingDay) => {
           return (

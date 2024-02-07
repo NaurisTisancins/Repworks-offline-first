@@ -1,7 +1,6 @@
-import { StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, Dimensions, SafeAreaView } from 'react-native';
 import { View, Text } from '../../components/Themed';
 import { useStore } from '../../store';
-import { toJS } from 'mobx';
 import TrainingDayAddExerciseItem from './TrainingDayAddExerciseItem';
 import Colors from '../../constants/Colors';
 import { useState } from 'react';
@@ -11,9 +10,11 @@ const AddExercises = () => {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
     });
-    const { trainingDays } = useStore();
+    const {
+        RoutineStore: { trainingDays },
+    } = useStore();
     return (
-        <View
+        <SafeAreaView
             style={{
                 height: windowDimensions.height - 210,
             }}
@@ -33,7 +34,7 @@ const AddExercises = () => {
                     ))}
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

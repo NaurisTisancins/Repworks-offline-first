@@ -8,10 +8,6 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { View, Text } from '../Themed';
 import { TextInput } from '../common/TextInput';
 import ButtonPrimary from '../common/ButtonPrimary';
-import {
-    CreateTrainingDayPayload,
-    CreateTrainingDaysPayload,
-} from '../../store/Types';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useStore } from '../../store';
@@ -47,11 +43,13 @@ const AddTrainingDays = ({
         return console.log({ errors });
     };
     const {
-        selectedRoutine,
-        createTrainingDay,
-        getTrainingDays,
-        trainingDays,
-        isStateLoading,
+        RoutineStore: {
+            selectedRoutine,
+            createTrainingDay,
+            getTrainingDays,
+            trainingDays,
+            isStateLoading,
+        },
     } = useStore();
 
     const { ...methods } = useForm<FormValues>({

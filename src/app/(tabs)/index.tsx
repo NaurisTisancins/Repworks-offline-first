@@ -3,9 +3,12 @@ import ActiveRoutineView from '../../components/ActiveRoutineView';
 import { observer } from 'mobx-react';
 import { useStore } from '../../store';
 import { useEffect } from 'react';
+import Colors from '../../constants/Colors';
 
 const HomeScreen = () => {
-    const { getActiveRoutines } = useStore();
+    const {
+        RoutineStore: { getActiveRoutines },
+    } = useStore();
 
     useEffect(() => {
         getActiveRoutines();
@@ -21,15 +24,10 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
-        marginHorizontal: 14,
-        marginVertical: 30,
+        backgroundColor: Colors.dark['background'],
+        paddingHorizontal: 14,
+        paddingVertical: 30,
         gap: 20,
-    },
-    separator: {
-        borderBottomColor: 'lightgray',
-        borderBottomWidth: 0.5,
-        marginHorizontal: 10,
     },
 });
 

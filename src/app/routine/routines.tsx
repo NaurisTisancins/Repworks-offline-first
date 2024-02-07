@@ -9,7 +9,9 @@ import Colors from '../../constants/Colors';
 import { useStore } from '../../store';
 
 const RoutineListScreen = () => {
-    const { setSelectedRoutine } = useStore();
+    const {
+        RoutineStore: { setSelectedRoutine },
+    } = useStore();
 
     return (
         <SafeAreaView style={styles.container}>

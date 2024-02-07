@@ -9,9 +9,7 @@ import { View, Text } from '../../components/Themed';
 import CreateRoutineForm from '../../components/createRoutineFlow/CreateRoutineForm';
 import AddTrainingDays from '../../components/createRoutineFlow/AddTrainingDays';
 import AddExercises from '../../components/createRoutineFlow/AddExercises';
-import FormStepper, {
-    FormStep,
-} from '../../components/formStepper/FormStepper';
+import { FormStep } from '../../components/formStepper/FormStepper';
 import React, { useState } from 'react';
 import ButtonPrimary from '../../components/common/ButtonPrimary';
 import { useStore } from '../../store';
@@ -49,7 +47,9 @@ const formSteps: FormStep[] = [
 const CreateRoutineRoutineScreen = () => {
     const [steps, setSteps] = React.useState<FormStep[]>(formSteps);
     const [activeStep, setActiveStep] = React.useState<FormStep>(steps[0]);
-    const { selectedRoutine, deleteRoutineById } = useStore();
+    const {
+        RoutineStore: { selectedRoutine },
+    } = useStore();
     const router = useRouter();
     const [windowDimensions, setWindowDimensions] = useState({
         width: Dimensions.get('window').width,
@@ -94,6 +94,7 @@ const CreateRoutineRoutineScreen = () => {
             case 1:
                 return (
                     <CreateRoutineForm
+                        next={nextStep}
                         activeStep={activeStep}
                         setActiveStepDone={setActiveStepDone}
                     />

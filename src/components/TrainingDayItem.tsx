@@ -25,19 +25,7 @@ function TrainingDayItem({
     modalContent,
     modalVisible,
     setModalVisible,
-}: WorkoutViewProps) {
-    const { getExercisesByTrainingDayId } = useStore();
-
-    async function getExercises() {
-        if (!trainingDay.exercises && trainingDay.day_id) {
-            await getExercisesByTrainingDayId(trainingDay.day_id);
-        }
-    }
-
-    useEffect(() => {
-        getExercises();
-    }, []);
-
+}: Readonly<WorkoutViewProps>) {
     return (
         <>
             <Pressable
@@ -52,7 +40,7 @@ function TrainingDayItem({
                         trainingDay.exercises?.length ?? 0
                     } exercises`}</Text>
                 </View>
-
+                {/* <Text>{JSON.stringify(trainingDay, null, 2)}</Text> */}
                 <View style={styles.exercisesContainer}>
                     {trainingDay.exercises &&
                         trainingDay.exercises.map((exercise: Exercise) => {
@@ -94,17 +82,17 @@ const styles = StyleSheet.create({
         paddingBottom: Sizing.spacing['md'],
     },
     titleChip: {
-        backgroundColor: Colors.dark.primary,
+        backgroundColor: Colors.dark.gray600,
         ...Colors.dark.shadowStyle,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: Sizing.borderRadius['md'],
-        paddingHorizontal: Sizing.spacing['md'],
+        borderRadius: Sizing.borderRadius['sm'],
+        paddingHorizontal: Sizing.spacing['sm'],
         paddingVertical: Sizing.spacing['sm'],
         opacity: 0.7,
     },
     title: {
-        fontSize: Sizing.fontSize['lg'],
+        fontSize: Sizing.fontSize['md'],
         fontWeight: '600',
         alignContent: 'center',
         color: Colors.dark.text,

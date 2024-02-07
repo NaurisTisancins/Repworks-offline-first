@@ -3,25 +3,20 @@ import RoutineView from './RoutineListItem';
 import { useStore } from '../store/index';
 import { observer } from 'mobx-react';
 import { useEffect } from 'react';
-import ButtonPrimary from './common/ButtonPrimary';
-import { router } from 'expo-router';
+
 import Colors from '../constants/Colors';
 
 const RoutineList = () => {
-    const { routinesList, setSelectedRoutine, activeRoutines, getRoutines } =
-        useStore();
+    const {
+        RoutineStore: { routinesList, getRoutines },
+    } = useStore();
 
     const getRoutinesList = async () => {
         await getRoutines();
     };
 
     useEffect(() => {
-        // setSelectedRoutine(null);
         getRoutinesList();
-
-        return () => {
-            setSelectedRoutine(null);
-        };
     }, []);
 
     return (

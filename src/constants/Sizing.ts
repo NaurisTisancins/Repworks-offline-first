@@ -6,8 +6,8 @@ export default {
         lg: 24,
         xl: 32,
         xxl: 40,
-        xxl2: 48,
-        xxl3: 56,
+        xxxl: 48,
+        xxxxl: 56,
     },
     borderRadius: {
         xs: 4,
@@ -22,9 +22,9 @@ export default {
         sm: 14,
         md: 16,
         lg: 20,
-        lg2: 24,
-        xl: 32,
-        xxl: 40,
+        xl: 24,
+        xxl: 32,
+        xxxl: 40,
     },
     fontWeight: {
         xs: '200',

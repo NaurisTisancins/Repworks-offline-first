@@ -7,6 +7,8 @@ export const routeConfig = {
 
     getTrainingDaysByRoutineId: (routineId: string) =>
         `/training_days/${routineId}`,
+    getTrainingDaysWithExercisesByRoutineId: (routineId: string) =>
+        `/training_days/with_exercises/${routineId}`,
     createTrainingDays: `/training_days`,
     createTrainingDay: (routineId: string) => `/training_days/${routineId}`,
 

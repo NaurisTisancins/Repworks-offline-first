@@ -1,7 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import {
     makePersistable,
-    configurePersistable,
     stopPersisting,
     clearPersistedStore,
 } from 'mobx-persist-store';
@@ -12,31 +11,21 @@ import {
     post,
     routeConfig,
     remove,
+    put,
 } from '../services/api/index';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-    RepsAndSets,
     Routine,
-    Session,
     TrainingDay,
     BaseResponseType,
     RoutinesResponse,
     TrainingDaysResponse,
     CreateRoutinePayload,
     CreateTrainingDaysPayload,
-    CreateTrainingDayPayload,
     Exercise,
     ExercisesResponse,
-    TrainingDayExercisesResponse,
     TrainingDayWithExercises,
 } from './Types';
 import { AxiosError } from 'axios';
-
-configurePersistable({
-    storage: AsyncStorage,
-    stringify: true,
-    debugMode: false,
-});
 
 type LoadingState =
     | 'create-routine'
@@ -66,7 +55,6 @@ export class RoutineStore {
     trainingDays: TrainingDayWithExercises[] = [];
 
     currentTrainingDay: TrainingDay | null = null;
-    currentSession: Session | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -123,81 +111,6 @@ export class RoutineStore {
         return this.currentTrainingDay;
     };
 
-    // setExercisePerformance = (exerciseId: string, values: RepsAndSets[]) => {
-    //     if (!this.currentTrainingDay) return;
-
-    //     if (this.currentSession === null) this.createSession();
-
-    //     const exerciseById = this.currentTrainingDay?.exercises.find(
-    //         (item) => item.id === exerciseId
-    //     );
-
-    //     if (!exerciseById) {
-    //         return console.log('Store Error::Exercise Not Found');
-    //     }
-
-    //     const performedExerciseIndex =
-    //         this.currentSession?.performedExercises.findIndex(
-    //             (item) => item.exerciseId === exerciseId
-    //         );
-
-    //     if (performedExerciseIndex !== -1) {
-    //         if (!this.currentSession || performedExerciseIndex === -1) return;
-
-    //         const currentPerformedExercises =
-    //             this.currentSession.performedExercises[performedExerciseIndex];
-
-    //         currentPerformedExercises.repsAndSets = values;
-    //     } else {
-    //         const performedExercise = {
-    //             id: uuid.v4().toString(),
-    //             exerciseId: exerciseById.id,
-    //             exercise: exerciseById,
-    //             repsAndSets: [...values],
-    //         };
-
-    //         this.currentSession?.performedExercises.push(performedExercise);
-    //     }
-    // };
-
-    saveSession = () => {
-        if (!this.currentSession) {
-            console.log('There is no session in Store');
-            return;
-        }
-        this.currentTrainingDay?.history.push(this.currentSession);
-        this.saveTraningDay();
-    };
-
-    saveTraningDay = () => {
-        if (!this.currentTrainingDay) {
-            console.log('There are no training days selected in Store');
-            return;
-        }
-        if (!this.activeRoutine) {
-            console.log('There no Routines selected in Store');
-            return;
-        }
-        const trainingDayIndex = this.trainingPlan.findIndex((item) => {
-            if (!this.currentTrainingDay) return;
-            return item.id === this.currentTrainingDay.id;
-        });
-        this.trainingPlan[trainingDayIndex] = this.currentTrainingDay;
-    };
-
-    createSession = () => {
-        const newSession = {
-            id: uuid.v4().toString(),
-            date: new Date(),
-            performedExercises: [],
-        };
-        this.currentSession = newSession;
-    };
-
-    getCurrentSession = () => {
-        return this.currentSession;
-    };
-
     setRoutinesList = (routines: Routine[]) => {
         this.routinesList = routines;
     };
@@ -231,6 +144,7 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
+                    // console.log(response.data);
                     // @ts-ignore
                     this.setActiveRoutines(response.data);
                 }
@@ -254,7 +168,9 @@ export class RoutineStore {
         }
         this.selectedRoutine &&
             this.selectedRoutine.routine_id &&
-            (await this.getTrainingDays(this.selectedRoutine.routine_id));
+            (await this.getTrainingDaysWithExercises(
+                this.selectedRoutine.routine_id
+            ));
     };
 
     createRoutine = async (payload: CreateRoutinePayload) => {
@@ -300,7 +216,7 @@ export class RoutineStore {
 
     updateRoutine = async (payload: Routine) => {
         this.addLoadingState('update-routine');
-        const data = await post<BaseResponseType<RoutinesResponse>>({
+        const data = await put<BaseResponseType<RoutinesResponse>>({
             client: mainClient,
             url: routeConfig.updateRoutine,
             data: payload,
@@ -342,6 +258,28 @@ export class RoutineStore {
         });
 
         this.removeLoadingState('get-training-days');
+    };
+
+    getTrainingDaysWithExercises = async (routine_id: string) => {
+        this.addLoadingState('get-training-days');
+        const data = await get<BaseResponseType<TrainingDaysResponse>>({
+            client: mainClient,
+            url: routeConfig.getTrainingDaysWithExercisesByRoutineId(
+                routine_id
+            ),
+            onError: (error) => {
+                console.log('Error', error);
+            },
+            onResponse: (response) => {
+                if (response?.data) {
+                    // console.log(response.data.data);
+                    // @ts-ignore
+                    this.setTrainingDays(response.data);
+                }
+            },
+        });
+        this.removeLoadingState('get-training-days');
+        return data;
     };
 
     createTrainingDays = async (payload: CreateTrainingDaysPayload[]) => {
@@ -405,7 +343,7 @@ export class RoutineStore {
                 console.log('Error', error);
             },
             onResponse: (response) => {
-                console.log(response);
+                // console.log(response);
             },
         });
     };
@@ -480,8 +418,8 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     this.saveExercisesToTrainingDay(
+                        // @ts-ignore
                         response.data,
                         training_day_id
                     );
@@ -496,7 +434,6 @@ export class RoutineStore {
 
     removeExerciseFromTrainingDay = async (link_id: string) => {
         this.addLoadingState('remove-exercise-from-training-day');
-        console.log(routeConfig.removeExerciseFromTrainingDay(link_id));
         const data = await remove<BaseResponseType<Exercise>>({
             client: mainClient,
             url: routeConfig.removeExerciseFromTrainingDay(link_id),
