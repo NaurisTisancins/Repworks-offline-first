@@ -18,7 +18,6 @@ import Colors from '../../constants/Colors';
 import Sizing from '../../constants/Sizing';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 type AddExercisesProps = {
     trainingDay: TrainingDayWithExercises;
@@ -60,13 +59,14 @@ function TrainingDayAddExerciseItem({
 
     async function getExercises() {
         if (!trainingDay.day_id) return;
+
         const exercises = await getExercisesByTrainingDayId(
             trainingDay?.day_id
         );
     }
 
     React.useEffect(() => {
-        getExercises();
+        if (ExerciseListItemSelected.length === 0) getExercises();
     }, []);
 
     const onSubmitExercise = async (exercise: Exercise) => {
@@ -117,6 +117,10 @@ function TrainingDayAddExerciseItem({
                         justifyContent: 'center',
                     }}
                     onPress={() => {
+                        if (exerciseList.length === 0) {
+                            console.log('no exercises');
+                            getExercises();
+                        }
                         setExerciseFormVisible(!exerciseFormVisible);
                     }}
                 >

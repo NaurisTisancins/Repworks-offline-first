@@ -1,4 +1,9 @@
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import {
+    ActivityIndicator,
+    Pressable,
+    StyleSheet,
+    ViewStyle,
+} from 'react-native';
 import { View, Text } from '../../components/Themed';
 import { TextInput } from '../common/TextInput';
 import Checkbox from 'expo-checkbox';
@@ -16,6 +21,7 @@ import { FormStep } from '../formStepper/FormStepper';
 import React from 'react';
 import Colors from '../../constants/Colors';
 import Sizing from '../../constants/Sizing';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export interface FormValues extends FieldValues {
     name: string;
@@ -43,6 +49,7 @@ const CreateRoutineForm = ({
         RoutineStore: {
             selectedRoutine,
             createRoutine,
+            getTrainingDaysWithExercises,
             updateRoutine,
             getRoutines,
             isStateLoading,
@@ -82,6 +89,9 @@ const CreateRoutineForm = ({
             if (result) {
                 setActiveStepDone(activeStep);
                 getRoutines();
+                getTrainingDaysWithExercises(
+                    selectedRoutine?.routine_id as string
+                );
                 next();
             }
         } else {
@@ -91,6 +101,9 @@ const CreateRoutineForm = ({
             if (result) {
                 setActiveStepDone(activeStep);
                 getRoutines();
+                getTrainingDaysWithExercises(
+                    selectedRoutine?.routine_id as string
+                );
                 next();
             }
         }
@@ -128,33 +141,45 @@ const CreateRoutineForm = ({
                             multiline
                             setFormError={setError}
                         />
+
                         <View
                             style={{
-                                flex: -1,
                                 flexDirection: 'row',
-                                backgroundColor: 'transparent',
+                                justifyContent: 'space-between',
                                 marginBottom: Sizing.spacing['md'],
-                                gap: 10,
+                                borderRadius: Sizing.borderRadius['sm'],
+                                padding: 2,
+                                ...Colors.dark.shadowStyle,
                             }}
                         >
-                            <Checkbox
-                                value={methods.watch('isActive')}
-                                onValueChange={() =>
-                                    methods.setValue(
-                                        'isActive',
-                                        !methods.watch('isActive')
-                                    )
-                                }
-                            />
-                            <Text
-                                style={{
-                                    color: 'white',
-                                    marginBottom: 10,
-                                    marginLeft: 0,
+                            <Pressable
+                                onPress={() => {
+                                    methods.setValue('isActive', true);
+                                    console.log(methods.getValues('isActive'));
                                 }}
+                                style={[
+                                    styles.toggleButtonStyle,
+                                    methods.watch('isActive')
+                                        ? styles.activeBG
+                                        : styles.inactiveBG,
+                                ]}
                             >
-                                Set as Active Routine?
-                            </Text>
+                                <Text>Active</Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={() => {
+                                    methods.setValue('isActive', false);
+                                    console.log(methods.getValues('isActive'));
+                                }}
+                                style={[
+                                    styles.toggleButtonStyle,
+                                    methods.watch('isActive')
+                                        ? styles.inactiveBG
+                                        : styles.activeBG,
+                                ]}
+                            >
+                                <Text>Inactive</Text>
+                            </Pressable>
                         </View>
 
                         <ButtonPrimary
@@ -193,7 +218,7 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         backgroundColor: Colors.dark['background'],
-        gap: Sizing.spacing['md'],
+        gap: Sizing.spacing['xs'],
     },
     formContainer: {
         backgroundColor: 'transparent',
@@ -206,6 +231,19 @@ const styles = StyleSheet.create({
         right: 0,
         left: 0,
         flexDirection: 'row',
+    },
+    toggleButtonStyle: {
+        flex: 1,
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: Sizing.borderRadius['xs'],
+    },
+    activeBG: {
+        backgroundColor: Colors.dark.gray300,
+    },
+    inactiveBG: {
+        backgroundColor: 'transparent',
     },
 });
 

@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 
 function ActiveRoutineView() {
     const {
-        RoutineStore: { activeRoutines },
+        RoutineStore: { activeRoutines, setSelectedRoutine },
     } = useStore();
 
     return (
@@ -29,9 +29,10 @@ function ActiveRoutineView() {
                     </Text>
                     <ButtonPrimary
                         title={'Add routine'}
-                        onButtonPress={() =>
-                            router.push('/routine/createRoutine')
-                        }
+                        onButtonPress={() => {
+                            setSelectedRoutine(null);
+                            router.push('/routine/createRoutine');
+                        }}
                     />
                     <Text style={styles.separatorText}>Or</Text>
                     <ButtonPrimary

@@ -9,20 +9,23 @@ import ButtonPrimary from '../../components/common/ButtonPrimary';
 import Colors from '../../constants/Colors';
 import Sizing from '../../constants/Sizing';
 import { observer } from 'mobx-react';
+import Toast from 'react-native-toast-message';
 
 function RoutineScreen() {
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedDay, setSelectedDay] = useState<TrainingDay | null>();
+    const [selectedDay, setSelectedDay] =
+        useState<TrainingDayWithExercises | null>();
     const { routine_id } = useLocalSearchParams();
     const {
-        RoutineStore: {
-            selectedRoutine,
-            setSelectedRoutineById,
-            setCurrentTrainingDay,
-            trainingDays,
-            getTrainingDaysWithExercises,
-        },
-    } = useStore();
+        selectedRoutine,
+        setSelectedRoutineById,
+        setCurrentTrainingDay,
+        trainingDays,
+        currentTrainingDay,
+        getTrainingDaysWithExercises,
+    } = useStore().RoutineStore;
+    const { createSession, currentSession, checkIfSessionInProgress } =
+        useStore().SessionStore;
 
     const getTrainingDaysList = async () => {
         if (selectedRoutine) {
@@ -37,7 +40,7 @@ function RoutineScreen() {
         getTrainingDaysList();
     }, [routine_id]);
 
-    function openModal(trainingDay: TrainingDay) {
+    function openModal(trainingDay: TrainingDayWithExercises) {
         setModalVisible(true);
         setSelectedDay(trainingDay);
     }
@@ -46,11 +49,39 @@ function RoutineScreen() {
         setModalVisible(false);
     }
 
-    function startSession() {
+    async function startSession() {
         if (!selectedDay) return;
+        if (selectedDay.exercises.length === 0) {
+            Toast.show({
+                type: 'error',
+                text1: 'No exercises',
+                text2: 'Please add exercises to start session',
+            });
+            closeModal();
+            return;
+        }
         selectedDay.day_id && setCurrentTrainingDay(selectedDay.day_id);
-        // createSession();
-        router.push('/routine/session');
+
+        if (currentTrainingDay?.day_id) {
+            const isSessionInProgress = await checkIfSessionInProgress(
+                selectedRoutine?.routine_id as string
+            );
+
+            if (isSessionInProgress.data) {
+                Toast.show({
+                    type: 'info',
+                    text1: `Session in progress ${isSessionInProgress.data.day_name}`,
+                    text2: 'Showing the previously started session.',
+                });
+                setCurrentTrainingDay(isSessionInProgress.data.day_id);
+                router.push(`/session/${isSessionInProgress.data.day_id}`);
+            } else {
+                const result = await createSession(currentTrainingDay);
+                if (result) router.push(`/session/${selectedDay.day_id}`);
+                router.push(`/session/${selectedDay.day_id}`);
+            }
+        }
+
         closeModal();
     }
 
@@ -65,6 +96,19 @@ function RoutineScreen() {
         <ScrollView style={styles.container}>
             <View style={styles.trainingDayContainer}>
                 <Text style={styles.name}>{selectedRoutine.name}</Text>
+                <Text
+                    style={{
+                        textAlign: 'left',
+                        fontSize: Sizing.fontSize['sm'],
+                        fontWeight: '600',
+                        marginBottom: Sizing.spacing['md'],
+                        color: Colors.dark['text'],
+                        backgroundColor: Colors.dark['background'],
+                    }}
+                >
+                    {JSON.stringify(currentSession, null, 2)}
+                </Text>
+
                 {trainingDays && trainingDays.length > 0 ? (
                     trainingDays.map((item: TrainingDayWithExercises) => {
                         return (
@@ -72,7 +116,7 @@ function RoutineScreen() {
                                 key={item.day_id}
                                 trainingDay={item}
                                 modalVisible={modalVisible}
-                                setModalVisible={setModalVisible}
+                                setModalVisible={openModal}
                                 modalContent={
                                     <>
                                         <Text style={styles.textStyle}>

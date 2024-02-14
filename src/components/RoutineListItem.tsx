@@ -16,13 +16,13 @@ export default function RoutineListItem({ routine }: Readonly<RoutineProps>) {
         RoutineStore: {
             setSelectedRoutine,
             getTrainingDaysWithExercises,
-            getTrainingDays,
+
             trainingDays,
         },
     } = useStore();
 
     useEffect(() => {
-        getTrainingDays(routine.routine_id);
+        getTrainingDaysWithExercises(routine.routine_id);
     }, []);
 
     function onSelect(): void {

@@ -17,6 +17,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
 import TrainingDayItem from '../TrainingDayItem';
 import Sizing from '../../constants/Sizing';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { TrainingDay } from '../../store/Types';
 
 const validationSchema = z.object({
     day_name: z.string().min(2).max(25),
@@ -46,7 +48,7 @@ const AddTrainingDays = ({
         RoutineStore: {
             selectedRoutine,
             createTrainingDay,
-            getTrainingDays,
+            getTrainingDaysWithExercises,
             trainingDays,
             isStateLoading,
         },
@@ -60,7 +62,13 @@ const AddTrainingDays = ({
         mode: 'onChange',
     });
 
+    function openModal() {
+        setModalVisible(true);
+        //   setSelectedDay(trainingDay);
+    }
+
     React.useEffect(() => {
+        getTrainingDaysWithExercises(selectedRoutine?.routine_id as string);
         if (trainingDays.length > 0) {
             setActiveStepDone(activeStep);
         }
@@ -77,15 +85,19 @@ const AddTrainingDays = ({
             selectedRoutine.routine_id,
             data.day_name
         );
+
         if (result) {
             methods.reset();
             setActiveStepDone(activeStep);
-            getTrainingDays(selectedRoutine.routine_id);
+            getTrainingDaysWithExercises(selectedRoutine.routine_id);
         }
     };
     return (
         <View
-            style={{ height: '100%', backgroundColor: Colors.dark.background }}
+            style={{
+                height: '100%',
+                backgroundColor: Colors.dark.background,
+            }}
         >
             <FormProvider {...methods}>
                 {formError && (
@@ -99,13 +111,13 @@ const AddTrainingDays = ({
 
                 <View
                     style={{
-                        marginBottom: Sizing.spacing['md'],
                         backgroundColor: Colors.dark.background,
                     }}
                 >
                     <View
                         style={{
                             backgroundColor: 'transparent',
+                            paddingBottom: Sizing.spacing['md'],
                         }}
                     >
                         <TextInput
@@ -122,6 +134,7 @@ const AddTrainingDays = ({
                         />
                         {selectedRoutine && selectedRoutine.routine_id && (
                             <ButtonPrimary
+                                style={{}}
                                 disabled={
                                     isStateLoading('create-training-days') ||
                                     !selectedRoutine
@@ -130,7 +143,10 @@ const AddTrainingDays = ({
                                     onSubmitTrainingDay
                                 )}
                             >
-                                {isStateLoading('create-training-days') ? (
+                                {isStateLoading(
+                                    'create-training-days' ||
+                                        'get-training-days'
+                                ) ? (
                                     <ActivityIndicator
                                         size='small'
                                         color='white'
@@ -163,7 +179,7 @@ const AddTrainingDays = ({
                                     key={day.day_id}
                                     trainingDay={day}
                                     modalVisible={modalVisible}
-                                    setModalVisible={setModalVisible}
+                                    setModalVisible={openModal}
                                     modalContent={
                                         <>
                                             <Text style={styles.textStyle}>

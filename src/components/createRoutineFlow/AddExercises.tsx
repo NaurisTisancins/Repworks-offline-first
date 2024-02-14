@@ -4,6 +4,7 @@ import { useStore } from '../../store';
 import TrainingDayAddExerciseItem from './TrainingDayAddExerciseItem';
 import Colors from '../../constants/Colors';
 import { useState } from 'react';
+import Sizing from '../../constants/Sizing';
 
 const AddExercises = () => {
     const [windowDimensions, setWindowDimensions] = useState({
@@ -14,9 +15,10 @@ const AddExercises = () => {
         RoutineStore: { trainingDays },
     } = useStore();
     return (
-        <SafeAreaView
+        <View
             style={{
                 height: windowDimensions.height - 210,
+                backgroundColor: 'transparent',
             }}
         >
             <ScrollView
@@ -34,7 +36,7 @@ const AddExercises = () => {
                     ))}
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 };
 

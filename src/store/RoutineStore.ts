@@ -15,15 +15,13 @@ import {
 } from '../services/api/index';
 import {
     Routine,
-    TrainingDay,
-    BaseResponseType,
     RoutinesResponse,
-    TrainingDaysResponse,
     CreateRoutinePayload,
     CreateTrainingDaysPayload,
     Exercise,
     ExercisesResponse,
     TrainingDayWithExercises,
+    RoutineResponse,
 } from './Types';
 import { AxiosError } from 'axios';
 
@@ -54,7 +52,7 @@ export class RoutineStore {
 
     trainingDays: TrainingDayWithExercises[] = [];
 
-    currentTrainingDay: TrainingDay | null = null;
+    currentTrainingDay: TrainingDayWithExercises | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -102,10 +100,10 @@ export class RoutineStore {
         this.setLoadingState([...this.loadingState.filter((f) => f !== state)]);
     };
 
-    setCurrentTrainingDay = (id: string) => {
+    setCurrentTrainingDay = (day_id: string) => {
         if (!this.selectedRoutine) return;
         const currentTrainingDayIdx = this.trainingDays.findIndex(
-            (item) => item.day_id === id
+            (item) => item.day_id === day_id
         );
         this.currentTrainingDay = this.trainingDays[currentTrainingDayIdx];
         return this.currentTrainingDay;
@@ -117,7 +115,7 @@ export class RoutineStore {
     // API Calls
     getRoutines = async () => {
         this.addLoadingState('get-routines');
-        await get<BaseResponseType<RoutinesResponse>>({
+        await get<RoutinesResponse>({
             client: mainClient,
             url: routeConfig.getAllRoutines,
             onError: (error) => {
@@ -125,7 +123,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     this.setRoutinesList(response.data);
                 }
             },
@@ -136,16 +133,15 @@ export class RoutineStore {
     getActiveRoutines = async () => {
         this.setActiveRoutines([]);
         this.addLoadingState('get-active-routines');
-        await get<BaseResponseType<RoutinesResponse>>({
+        await get<RoutinesResponse>({
             client: mainClient,
             url: routeConfig.getActiveRoutines,
             onError: (error) => {
                 console.log('Error', error);
+                console.log('Error', error.config);
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // console.log(response.data);
-                    // @ts-ignore
                     this.setActiveRoutines(response.data);
                 }
             },
@@ -175,7 +171,7 @@ export class RoutineStore {
 
     createRoutine = async (payload: CreateRoutinePayload) => {
         this.addLoadingState('create-routine');
-        const data = await post<BaseResponseType<RoutinesResponse>>({
+        const data = await post<RoutineResponse>({
             client: mainClient,
             url: routeConfig.createRoutine,
             data: payload,
@@ -185,7 +181,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     this.setSelectedRoutine(response.data);
                 }
                 return response?.data;
@@ -216,7 +211,7 @@ export class RoutineStore {
 
     updateRoutine = async (payload: Routine) => {
         this.addLoadingState('update-routine');
-        const data = await put<BaseResponseType<RoutinesResponse>>({
+        const data = await put<RoutineResponse>({
             client: mainClient,
             url: routeConfig.updateRoutine,
             data: payload,
@@ -225,7 +220,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     this.setSelectedRoutine(response.data);
                 }
                 return response?.data;
@@ -239,30 +233,29 @@ export class RoutineStore {
         this.trainingDays = trainingDays;
     };
 
-    getTrainingDays = async (routine_id: string) => {
-        if (!this.selectedRoutine) return;
-        this.addLoadingState('get-training-days');
+    // getTrainingDays = async (routine_id: string) => {
+    //     if (!this.selectedRoutine) return;
+    //     this.addLoadingState('get-training-days');
 
-        await get<BaseResponseType<TrainingDaysResponse>>({
-            client: mainClient,
-            url: routeConfig.getTrainingDaysByRoutineId(routine_id),
-            onError: (error) => {
-                console.log('Error', error);
-            },
-            onResponse: (response) => {
-                if (response?.data) {
-                    // @ts-ignore
-                    this.setTrainingDays(response.data);
-                }
-            },
-        });
+    //     await get<TrainingDayWithExercises[]>({
+    //         client: mainClient,
+    //         url: routeConfig.getTrainingDaysByRoutineId(routine_id),
+    //         onError: (error) => {
+    //             console.log('Error', error);
+    //         },
+    //         onResponse: (response) => {
+    //             if (response?.data) {
+    //                 this.setTrainingDays(response.data);
+    //             }
+    //         },
+    //     });
 
-        this.removeLoadingState('get-training-days');
-    };
+    //     this.removeLoadingState('get-training-days');
+    // };
 
     getTrainingDaysWithExercises = async (routine_id: string) => {
         this.addLoadingState('get-training-days');
-        const data = await get<BaseResponseType<TrainingDaysResponse>>({
+        const data = await get<TrainingDayWithExercises[]>({
             client: mainClient,
             url: routeConfig.getTrainingDaysWithExercisesByRoutineId(
                 routine_id
@@ -272,8 +265,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // console.log(response.data.data);
-                    // @ts-ignore
                     this.setTrainingDays(response.data);
                 }
             },
@@ -284,7 +275,7 @@ export class RoutineStore {
 
     createTrainingDays = async (payload: CreateTrainingDaysPayload[]) => {
         this.addLoadingState('create-training-days');
-        const data = await post<BaseResponseType<TrainingDaysResponse>>({
+        const data = await post<TrainingDayWithExercises[]>({
             client: mainClient,
             url: routeConfig.createTrainingDays,
             data: payload,
@@ -293,7 +284,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     this.setTrainingDays(response.data);
                 }
             },
@@ -308,7 +298,7 @@ export class RoutineStore {
 
     createTrainingDay = async (routine_id: string, payload: string) => {
         this.addLoadingState('create-training-day');
-        const data = await post<BaseResponseType<TrainingDaysResponse>>({
+        const data = await post<TrainingDayWithExercises>({
             client: mainClient,
             url: routeConfig.createTrainingDay(routine_id),
             data: {
@@ -320,7 +310,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     this.appendTrainingDay(response.data);
                 }
             },
@@ -355,7 +344,7 @@ export class RoutineStore {
     searchExercises = async (searchTerm: string) => {
         this.addLoadingState('searching-exercises');
 
-        const exercises = await get<BaseResponseType<ExercisesResponse>>({
+        const exercises = await get<ExercisesResponse>({
             client: mainClient,
             url: routeConfig.searchExercises(searchTerm),
             onError: (error) => {
@@ -363,7 +352,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     this.setExerciseList(response.data);
                 }
             },
@@ -378,7 +366,7 @@ export class RoutineStore {
         training_day_id: string
     ) => {
         this.addLoadingState('add-exercise-to-training-day');
-        const data = await post<BaseResponseType<Exercise>>({
+        const data = await post<Exercise>({
             client: mainClient,
             url: routeConfig.addExerciseToTrainingDay(
                 exercise_id,
@@ -392,7 +380,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     return response.data;
                 }
             },
@@ -410,7 +397,7 @@ export class RoutineStore {
 
     getExercisesByTrainingDayId = async (training_day_id: string) => {
         this.addLoadingState('get-exercises-by-training-day-id');
-        const data = await get<BaseResponseType<Exercise[]>>({
+        const data = await get<Exercise[]>({
             client: mainClient,
             url: routeConfig.getExercisesByTrainingDayId(training_day_id),
             onError: (error) => {
@@ -419,7 +406,6 @@ export class RoutineStore {
             onResponse: (response) => {
                 if (response?.data) {
                     this.saveExercisesToTrainingDay(
-                        // @ts-ignore
                         response.data,
                         training_day_id
                     );
@@ -434,7 +420,7 @@ export class RoutineStore {
 
     removeExerciseFromTrainingDay = async (link_id: string) => {
         this.addLoadingState('remove-exercise-from-training-day');
-        const data = await remove<BaseResponseType<Exercise>>({
+        const data = await remove<Exercise>({
             client: mainClient,
             url: routeConfig.removeExerciseFromTrainingDay(link_id),
             onError: (error) => {
@@ -445,7 +431,6 @@ export class RoutineStore {
             },
             onResponse: (response) => {
                 if (response?.data) {
-                    // @ts-ignore
                     return response.data;
                 }
             },

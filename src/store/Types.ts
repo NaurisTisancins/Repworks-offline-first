@@ -38,10 +38,22 @@ export interface Exercise {
 }
 
 export interface Session {
-    id: string;
-    date: Date;
-    performedExercises: PerformedExercise[];
+    session_id: string;
+    day_id: string;
+    in_progress: boolean;
+    created_at: string;
+    updated_at: string;
 }
+
+export type SessionWithExercises = {
+    session_id: string;
+    day_id: string;
+    day_name: string;
+    in_progress: boolean;
+    exercises: Exercise[];
+    created_at: string;
+    updated_at: string;
+};
 
 export interface PerformedExercise {
     id: string;

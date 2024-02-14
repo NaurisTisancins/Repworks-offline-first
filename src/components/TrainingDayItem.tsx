@@ -1,23 +1,16 @@
 import Colors from '../constants/Colors';
 import Sizing from '../constants/Sizing';
-import {
-    Exercise,
-    TrainingDay,
-    TrainingDayWithExercises,
-} from '../store/Types';
+import { Exercise, TrainingDayWithExercises } from '../store/Types';
 import MiniModal from '../components/common/MiniModal';
 import { Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
-import { useEffect, useState } from 'react';
-import ButtonPrimary from './common/ButtonPrimary';
 import { observer } from 'mobx-react';
-import { useStore } from '../store';
 
 type WorkoutViewProps = {
     trainingDay: TrainingDayWithExercises;
     modalContent: JSX.Element;
     modalVisible: boolean;
-    setModalVisible: (visible: boolean) => void;
+    setModalVisible: (trianingDay: TrainingDayWithExercises) => void;
 };
 
 function TrainingDayItem({
@@ -30,7 +23,9 @@ function TrainingDayItem({
         <>
             <Pressable
                 style={styles.container}
-                onLongPress={() => setModalVisible(true)}
+                onLongPress={() =>
+                    trainingDay.day_id && setModalVisible(trainingDay)
+                }
             >
                 <View style={styles.headerContainer}>
                     <View style={styles.titleChip}>
@@ -71,7 +66,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.dark['gray200'],
         borderRadius: Sizing.borderRadius['md'],
         paddingHorizontal: Sizing.spacing['md'],
-        paddingVertical: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['sm'],
     },
     headerContainer: {
         display: 'flex',
@@ -89,6 +84,7 @@ const styles = StyleSheet.create({
         borderRadius: Sizing.borderRadius['sm'],
         paddingHorizontal: Sizing.spacing['sm'],
         paddingVertical: Sizing.spacing['sm'],
+        textAlign: 'baseline',
         opacity: 0.7,
     },
     title: {
@@ -99,9 +95,8 @@ const styles = StyleSheet.create({
     },
     exerciseCount: {
         fontSize: Sizing.fontSize['md'],
-        textAlign: 'left',
         fontWeight: '600',
-        paddingBottom: Sizing.spacing['md'],
+        paddingVertical: Sizing.spacing['sm'],
         color: Colors.dark.accent2,
     },
     exercisesContainer: {

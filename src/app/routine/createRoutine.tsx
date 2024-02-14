@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     formContainer: {
         backgroundColor: 'transparent',
         paddingHorizontal: Sizing.spacing['md'],
-        paddingVertical: Sizing.spacing['md'],
+        paddingTop: Sizing.spacing.xxxxl,
     },
     formNavigationButtons: {
         position: 'absolute',

@@ -92,30 +92,29 @@ export const TextInput = (props: TextInputProps) => {
 
 const styles = StyleSheet.create({
     label: {
-        color: Colors.dark.grayText,
-        fontSize: Sizing.fontSize['md'],
-        marginBottom: Sizing.spacing['sm'],
+        color: Colors.dark.textSecondary,
+        fontSize: Sizing.fontSize['sm'],
+        paddingBottom: Sizing.spacing['xs'],
+        paddingLeft: Sizing.spacing['xs'],
         marginLeft: 0,
     },
     container: {
-        flex: -1,
         justifyContent: 'center',
         backgroundColor: Colors.dark.background,
     },
     input: {
-        backgroundColor: Colors.dark.gray100,
+        backgroundColor: Colors.dark.white,
         height: 40,
         paddingHorizontal: Sizing.spacing['md'],
-        borderRadius: Sizing.borderRadius['xs'],
+        borderRadius: Sizing.borderRadius['sm'],
     },
     multiLineInput: {
-        backgroundColor: Colors.dark.gray100,
+        backgroundColor: Colors.dark.white,
         minHeight: 80,
         paddingHorizontal: Sizing.spacing['md'],
-        borderRadius: Sizing.borderRadius['xs'],
+        borderRadius: Sizing.borderRadius['sm'],
     },
     errorContainer: {
-        flex: -1,
         height: 25,
         backgroundColor: Colors.dark.background,
     },

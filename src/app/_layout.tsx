@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { Pressable, useColorScheme } from 'react-native';
 import { RoutineStoreProvider } from '../store/index';
 import { Text } from '../components/Themed';
+import Toast from 'react-native-toast-message';
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -55,9 +56,6 @@ function RootLayoutNav() {
                     screenOptions={(props) => {
                         return {
                             headerBackTitle: 'Back',
-                            // onPressBack: async () => {
-                            //     setSelectedRoutine(null);
-                            // },
                             headerRight: () => (
                                 <Pressable
                                     onPress={() => {
@@ -82,20 +80,12 @@ function RootLayoutNav() {
                     />
                     {/* <Stack.Screen name='modal' options={{ presentation: 'modal' }} /> */}
                     <Stack.Screen name='routine/[routine_id]' />
-                    <Stack.Screen
-                        name='routine/session'
-                        options={{ title: 'Current Session' }}
-                    />
+
                     <Stack.Screen
                         name='routine/createRoutine'
                         options={{ title: 'Create Routine' }}
                     />
-                    {/* <Stack.Screen
-                        name='routine'
-                        options={{
-                            title: 'Routine',
-                        }}
-                    /> */}
+
                     <Stack.Screen
                         name='routine/routines'
                         options={{
@@ -104,8 +94,17 @@ function RootLayoutNav() {
                             headerRight: undefined,
                         }}
                     />
+                    <Stack.Screen
+                        name='session/[training_day_id]'
+                        options={{
+                            title: 'Session',
+                            gestureEnabled: false,
+                            headerLeft: () => <></>,
+                        }}
+                    />
                 </Stack>
             </RoutineStoreProvider>
+            <Toast />
         </ThemeProvider>
     );
 }

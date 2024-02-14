@@ -49,7 +49,7 @@ export default function ButtonPrimary({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: width,
+            width: width ?? '100%',
             height: height,
             borderRadius: 8,
             ...Colors.dark.shadowStyle,

@@ -11,18 +11,22 @@ type RoutineProps = {
 
 export default function ActiveRoutineListItem({ routine }: RoutineProps) {
     const {
-        RoutineStore: { setSelectedRoutine, getTrainingDays, trainingDays },
+        RoutineStore: {
+            setSelectedRoutine,
+            getTrainingDaysWithExercises,
+            trainingDays,
+        },
     } = useStore();
     // const numberOfTrainingDays = routine.length;
 
     useEffect(() => {
-        getTrainingDays(routine.routine_id);
+        getTrainingDaysWithExercises(routine.routine_id);
     }, []);
 
     function onSelect(): void {
         if (routine && routine.routine_id) {
             setSelectedRoutine(routine);
-            getTrainingDays(routine?.routine_id);
+            getTrainingDaysWithExercises(routine?.routine_id);
             router.push(`/routine/${routine.routine_id}`);
         }
     }
