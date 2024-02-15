@@ -1,21 +1,18 @@
-import { Link } from 'expo-router';
-import { useState } from 'react';
 import {
     Text,
     StyleSheet,
     Pressable,
     DimensionValue,
-    TouchableHighlight,
     StyleProp,
     ViewStyle,
-    PressableStateCallbackType,
-    PressableProps,
+    TextStyle,
 } from 'react-native';
 import Colors from '../../constants/Colors';
 
 type ButtonProps = {
     title?: string;
-    variant?: 'primary' | 'outlined' | 'danger' | 'passive';
+    titleStyles?: StyleProp<TextStyle>;
+    variant?: 'primary' | 'outlined' | 'danger' | 'passive' | 'success';
     disabled?: boolean;
     onButtonPress: () => void;
     width?: DimensionValue | undefined;
@@ -26,6 +23,7 @@ type ButtonProps = {
 
 export default function ButtonPrimary({
     title,
+    titleStyles,
     variant = 'primary',
     disabled = false,
     onButtonPress,
@@ -35,15 +33,19 @@ export default function ButtonPrimary({
     style,
 }: ButtonProps) {
     const buttonVariantStyles = (pressed: boolean): StyleProp<ViewStyle> => {
-        const disabledStyle: string = Colors.dark['gray300'];
+        const disabledStyle: string = Colors.dark.grayCool[400];
 
         const backgroundColorPrimary = pressed
             ? Colors.dark.accent7
             : Colors.dark.primary;
 
         const backgroundColorOutlined = pressed
-            ? Colors.dark.gray400
-            : Colors.dark.background;
+            ? Colors.dark.grayCool[200]
+            : Colors.dark.background[600];
+
+        const backgroundColorSuccess = pressed
+            ? Colors.dark.green[200]
+            : Colors.dark.green[500];
 
         const baseStyle: StyleProp<ViewStyle> = {
             display: 'flex',
@@ -52,7 +54,7 @@ export default function ButtonPrimary({
             width: width ?? '100%',
             height: height,
             borderRadius: 8,
-            ...Colors.dark.shadowStyle,
+            ...Colors.dark.shadows.light.elevation2,
             ...(style as object),
         };
 
@@ -71,7 +73,7 @@ export default function ButtonPrimary({
                         ? disabledStyle
                         : backgroundColorOutlined,
                     borderWidth: 2,
-                    borderColor: Colors.dark.primary,
+                    borderColor: Colors.dark.grayCool[400],
                 };
             case 'danger':
                 return {
@@ -80,12 +82,20 @@ export default function ButtonPrimary({
                         ? disabledStyle
                         : Colors.dark.danger,
                 };
+
+            case 'success':
+                return {
+                    ...baseStyle,
+                    backgroundColor: disabled
+                        ? disabledStyle
+                        : backgroundColorSuccess,
+                };
             case 'passive':
                 return {
                     ...baseStyle,
                     backgroundColor: disabled
                         ? disabledStyle
-                        : Colors.dark['gray'],
+                        : Colors.dark.grayCool[400],
                 };
         }
     };
@@ -97,7 +107,13 @@ export default function ButtonPrimary({
                 disabled={disabled}
                 style={({ pressed }) => buttonVariantStyles(pressed)}
             >
-                {children ?? <Text style={styles.buttonText}>{title}</Text>}
+                {children ?? (
+                    <Text
+                        style={[titleStyles ? titleStyles : styles.buttonText]}
+                    >
+                        {title}
+                    </Text>
+                )}
             </Pressable>
         </>
     );
@@ -106,7 +122,7 @@ export default function ButtonPrimary({
 const styles = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         fontWeight: '600',
         fontSize: 16,
     },

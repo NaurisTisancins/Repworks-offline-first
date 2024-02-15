@@ -31,9 +31,11 @@ function TrainingDayItem({
                     <View style={styles.titleChip}>
                         <Text style={styles.title}>{trainingDay.day_name}</Text>
                     </View>
-                    <Text style={styles.exerciseCount}>{`${
-                        trainingDay.exercises?.length ?? 0
-                    } exercises`}</Text>
+                    <View style={styles.exerciseCountChip}>
+                        <Text style={styles.exerciseCount}>{`${
+                            trainingDay.exercises?.length ?? 0
+                        } exercises`}</Text>
+                    </View>
                 </View>
                 {/* <Text>{JSON.stringify(trainingDay, null, 2)}</Text> */}
                 <View style={styles.exercisesContainer}>
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        backgroundColor: Colors.dark['gray200'],
+        backgroundColor: Colors.dark.grayCool[200],
         borderRadius: Sizing.borderRadius['md'],
         paddingHorizontal: Sizing.spacing['md'],
         paddingVertical: Sizing.spacing['sm'],
@@ -77,8 +79,8 @@ const styles = StyleSheet.create({
         paddingBottom: Sizing.spacing['md'],
     },
     titleChip: {
-        backgroundColor: Colors.dark.gray600,
-        ...Colors.dark.shadowStyle,
+        backgroundColor: Colors.dark.grayWarm[300],
+        ...Colors.dark.shadows.dark.elevation2,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: Sizing.borderRadius['sm'],
@@ -91,13 +93,18 @@ const styles = StyleSheet.create({
         fontSize: Sizing.fontSize['md'],
         fontWeight: '600',
         alignContent: 'center',
-        color: Colors.dark.text,
+        color: Colors.dark.grayWarm[900],
+    },
+    exerciseCountChip: {
+        borderRadius: Sizing.borderRadius['sm'],
+        backgroundColor: Colors.dark.green[200],
+        paddingHorizontal: Sizing.spacing['sm'],
     },
     exerciseCount: {
-        fontSize: Sizing.fontSize['md'],
+        fontSize: Sizing.fontSize['sm'],
         fontWeight: '600',
         paddingVertical: Sizing.spacing['sm'],
-        color: Colors.dark.accent2,
+        color: Colors.dark.green[800],
     },
     exercisesContainer: {
         width: '100%',
@@ -107,10 +114,11 @@ const styles = StyleSheet.create({
         paddingBottom: Sizing.spacing['md'],
         fontSize: 16,
         fontWeight: '600',
+        color: Colors.dark.grayWarm[900],
     },
 
     textStyle: {
-        color: Colors.dark['gray600'],
+        color: Colors.dark.grayWarm[200],
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 10,

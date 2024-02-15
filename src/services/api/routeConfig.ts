@@ -22,7 +22,8 @@ export const routeConfig = {
         `/exercises/${trainingDayId}`,
     removeExerciseFromTrainingDay: (link_id: string) => `/exercises/${link_id}`,
 
-    createSession: `/session`,
+    createSession: (trainingDayId: string) => `/session/${trainingDayId}`,
+    endSession: (session_id: string) => `/session/end/${session_id}`,
     checkSessionInProgress: (routine_id: string) =>
         `/session/in_progress/${routine_id}`,
 };

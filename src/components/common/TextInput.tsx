@@ -18,7 +18,7 @@ import Sizing from '../../constants/Sizing';
 import Colors from '../../constants/Colors';
 
 interface TextInputProps extends RNTextInputProps, UseControllerProps {
-    label: string;
+    label?: string;
     labelColor?: string;
     name: string;
     defaultValue?: string;
@@ -48,7 +48,7 @@ const ControlledInput = (props: TextInputProps) => {
     return (
         <View style={styles.container}>
             {label && <Text style={lableStyle}>{label}</Text>}
-            <View style={{ backgroundColor: Colors.dark.background }}>
+            <View style={{ backgroundColor: 'transparent' }}>
                 <RNTextInput
                     autoCapitalize='none'
                     textAlign='left'
@@ -59,7 +59,7 @@ const ControlledInput = (props: TextInputProps) => {
                     style={inputStyleProps}
                 />
 
-                <View style={styles.errorContainer}>
+                <View style={[hasError && styles.errorContainer]}>
                     {hasError && (
                         <Text style={styles.error}>
                             {formState?.errors[name]?.message?.toString()}
@@ -92,7 +92,7 @@ export const TextInput = (props: TextInputProps) => {
 
 const styles = StyleSheet.create({
     label: {
-        color: Colors.dark.textSecondary,
+        color: Colors.dark.grayCool[800],
         fontSize: Sizing.fontSize['sm'],
         paddingBottom: Sizing.spacing['xs'],
         paddingLeft: Sizing.spacing['xs'],
@@ -100,26 +100,28 @@ const styles = StyleSheet.create({
     },
     container: {
         justifyContent: 'center',
-        backgroundColor: Colors.dark.background,
+        backgroundColor: 'transparent',
     },
     input: {
-        backgroundColor: Colors.dark.white,
+        backgroundColor: Colors.dark.grayWarm[100],
         height: 40,
         paddingHorizontal: Sizing.spacing['md'],
         borderRadius: Sizing.borderRadius['sm'],
+        ...Colors.dark.shadows.light.elevation2,
     },
     multiLineInput: {
-        backgroundColor: Colors.dark.white,
+        backgroundColor: Colors.dark.grayWarm[100],
         minHeight: 80,
         paddingHorizontal: Sizing.spacing['md'],
         borderRadius: Sizing.borderRadius['sm'],
+        ...Colors.dark.shadows.light.elevation2,
     },
     errorContainer: {
         height: 25,
-        backgroundColor: Colors.dark.background,
+        backgroundColor: Colors.dark.transparent,
     },
     error: {
-        backgroundColor: Colors.dark.background,
+        backgroundColor: Colors.dark.transparent,
         color: 'red',
     },
 });

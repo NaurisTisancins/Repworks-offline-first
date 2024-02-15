@@ -31,7 +31,7 @@ const Step = ({ step, active = false, setActive }: StepProps) => {
     };
 
     const activeTextStyle: StyleProp<TextStyle> = {
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         fontSize: 20,
         fontWeight: '600',
     };
@@ -47,10 +47,6 @@ const Step = ({ step, active = false, setActive }: StepProps) => {
             </View>
         </ButtonPrimary>
     );
-};
-
-const Separator = () => {
-    return <View style={styles.stepSeparator}></View>;
 };
 
 export type FormStep = {
@@ -83,9 +79,6 @@ const FormStepper = ({
                                 setActive={setActiveStep}
                                 active={activeStep.value === step.value}
                             />
-                            {index !== steps.length - 1 && (
-                                <Separator key={step.value + step.title} />
-                            )}
                         </>
                     );
                 })}
@@ -118,17 +111,9 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     stepLable: {
-        color: Colors.dark.text,
+        color: Colors.dark.grayCool[200],
         fontSize: Sizing.fontSize['lg'],
         fontWeight: '600',
-    },
-    stepSeparator: {
-        backgroundColor: Colors.dark['gray450'],
-        width: '10%',
-        height: 2,
-        borderRadius: 10,
-        opacity: 0.5,
-        // marginTop: 20,
     },
 });
 

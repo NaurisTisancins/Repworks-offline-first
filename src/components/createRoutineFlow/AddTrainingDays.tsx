@@ -17,8 +17,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
 import TrainingDayItem from '../TrainingDayItem';
 import Sizing from '../../constants/Sizing';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-import { TrainingDay } from '../../store/Types';
 
 const validationSchema = z.object({
     day_name: z.string().min(2).max(25),
@@ -96,7 +94,7 @@ const AddTrainingDays = ({
         <View
             style={{
                 height: '100%',
-                backgroundColor: Colors.dark.background,
+                backgroundColor: Colors.dark.background[400],
             }}
         >
             <FormProvider {...methods}>
@@ -111,7 +109,7 @@ const AddTrainingDays = ({
 
                 <View
                     style={{
-                        backgroundColor: Colors.dark.background,
+                        backgroundColor: Colors.dark.background[400],
                     }}
                 >
                     <View
@@ -154,7 +152,7 @@ const AddTrainingDays = ({
                                 ) : (
                                     <Text
                                         style={{
-                                            color: 'white',
+                                            color: Colors.dark.grayCool[200],
                                             fontWeight: '600',
                                             fontSize: 16,
                                         }}
@@ -168,7 +166,7 @@ const AddTrainingDays = ({
 
                     <ScrollView
                         contentContainerStyle={{
-                            backgroundColor: Colors.dark.background,
+                            backgroundColor: Colors.dark.background[400],
                             gap: Sizing.spacing['md'],
                             paddingVertical: Sizing.spacing['md'],
                         }}
@@ -231,7 +229,7 @@ const AddTrainingDays = ({
 
 const styles = StyleSheet.create({
     textStyle: {
-        color: Colors.dark['gray600'],
+        color: Colors.dark.grayCool[600],
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 10,

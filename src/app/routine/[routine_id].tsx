@@ -3,7 +3,7 @@ import { View, Text } from '../../components/Themed';
 import { useStore } from '../../store';
 import TrainingDayItem from '../../components/TrainingDayItem';
 import { useEffect, useState } from 'react';
-import { TrainingDay, TrainingDayWithExercises } from '../../store/Types';
+import { TrainingDayWithExercises } from '../../store/Types';
 import { router, useLocalSearchParams } from 'expo-router';
 import ButtonPrimary from '../../components/common/ButtonPrimary';
 import Colors from '../../constants/Colors';
@@ -13,9 +13,9 @@ import Toast from 'react-native-toast-message';
 
 function RoutineScreen() {
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedDay, setSelectedDay] =
-        useState<TrainingDayWithExercises | null>();
+
     const { routine_id } = useLocalSearchParams();
+
     const {
         selectedRoutine,
         setSelectedRoutineById,
@@ -42,16 +42,15 @@ function RoutineScreen() {
 
     function openModal(trainingDay: TrainingDayWithExercises) {
         setModalVisible(true);
-        setSelectedDay(trainingDay);
+        setCurrentTrainingDay(trainingDay.day_id as string);
     }
 
     function closeModal() {
         setModalVisible(false);
     }
 
-    async function startSession() {
-        if (!selectedDay) return;
-        if (selectedDay.exercises.length === 0) {
+    async function startSession(day: TrainingDayWithExercises) {
+        if (day.exercises.length === 0) {
             Toast.show({
                 type: 'error',
                 text1: 'No exercises',
@@ -60,7 +59,6 @@ function RoutineScreen() {
             closeModal();
             return;
         }
-        selectedDay.day_id && setCurrentTrainingDay(selectedDay.day_id);
 
         if (currentTrainingDay?.day_id) {
             const isSessionInProgress = await checkIfSessionInProgress(
@@ -76,9 +74,11 @@ function RoutineScreen() {
                 setCurrentTrainingDay(isSessionInProgress.data.day_id);
                 router.push(`/session/${isSessionInProgress.data.day_id}`);
             } else {
-                const result = await createSession(currentTrainingDay);
-                if (result) router.push(`/session/${selectedDay.day_id}`);
-                router.push(`/session/${selectedDay.day_id}`);
+                const result = await createSession(
+                    currentTrainingDay.day_id as string
+                );
+
+                result.data && router.push(`/session/${day.day_id}`);
             }
         }
 
@@ -87,7 +87,7 @@ function RoutineScreen() {
 
     if (!selectedRoutine)
         return (
-            <Text style={{ color: 'white' }}>
+            <Text style={{ color: Colors.dark.grayCool[200] }}>
                 There are no selected routines
             </Text>
         );
@@ -102,8 +102,8 @@ function RoutineScreen() {
                         fontSize: Sizing.fontSize['sm'],
                         fontWeight: '600',
                         marginBottom: Sizing.spacing['md'],
-                        color: Colors.dark['text'],
-                        backgroundColor: Colors.dark['background'],
+                        color: Colors.dark.grayCool[200],
+                        backgroundColor: Colors.dark.background[600],
                     }}
                 >
                     {JSON.stringify(currentSession, null, 2)}
@@ -125,9 +125,9 @@ function RoutineScreen() {
                                         <View style={styles.buttonsContainer}>
                                             <ButtonPrimary
                                                 title='Start'
-                                                onButtonPress={() =>
-                                                    startSession()
-                                                }
+                                                onButtonPress={() => {
+                                                    startSession(item);
+                                                }}
                                                 width={80}
                                             />
                                             <ButtonPrimary
@@ -144,7 +144,7 @@ function RoutineScreen() {
                         );
                     })
                 ) : (
-                    <Text style={{ color: 'white' }}>
+                    <Text style={{ color: Colors.dark.grayCool[200] }}>
                         There Are No training days
                     </Text>
                 )}
@@ -160,7 +160,7 @@ function RoutineScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.dark['background'],
+        backgroundColor: Colors.dark.background[600],
         paddingHorizontal: Sizing.spacing['md'],
         paddingVertical: Sizing.spacing['md'],
     },
@@ -169,12 +169,12 @@ const styles = StyleSheet.create({
         fontSize: Sizing.fontSize['lg'],
         fontWeight: '600',
         marginBottom: Sizing.spacing['md'],
-        color: Colors.dark['text'],
-        backgroundColor: Colors.dark['background'],
+        color: Colors.dark.grayCool[200],
+        backgroundColor: Colors.dark.background[600],
     },
     trainingDayContainer: {
         gap: 20,
-        backgroundColor: Colors.dark['background'],
+        backgroundColor: Colors.dark.background[600],
         marginBottom: Sizing.spacing['md'],
     },
 
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
         gap: 20,
     },
     textStyle: {
-        color: Colors.dark['gray600'],
+        color: Colors.dark.grayCool[800],
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 10,

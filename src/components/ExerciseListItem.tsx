@@ -8,6 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Exercise } from '../store/Types';
 import { StyleSheet, Text, View, ViewStyle, Dimensions } from 'react-native';
+import Colors from '../constants/Colors';
 
 const ITEM_HEIGHT = 30;
 const WIDTH_SCREEN = Dimensions.get('window').width;
@@ -60,7 +61,7 @@ const generateTag = (tags: string[]) => {
 
     return tags.map((tag) => (
         <View key={tag} style={tagStyle(tag)}>
-            <Text style={{ color: 'white' }}>{tag}</Text>
+            <Text style={{ color: Colors.dark.grayCool[200] }}>{tag}</Text>
         </View>
     ));
 };
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     title: {
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         fontSize: 18,
         fontWeight: '600',
     },
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     tag: {
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         borderWidth: 1,
         padding: 3,
         borderRadius: 5,

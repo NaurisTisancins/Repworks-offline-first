@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TextInput } from 'react-native';
+import Colors from '../../constants/Colors';
 
 type FormFieldProps = {
     label?: string;
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     inputLabel: {
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         width: '100%',
         fontSize: 14,
         fontWeight: '600',

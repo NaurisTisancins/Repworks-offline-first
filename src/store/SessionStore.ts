@@ -1,42 +1,13 @@
 import { makeAutoObservable } from 'mobx';
-import {
-    BaseResponseType,
-    SessionWithExercises,
-    TrainingDayWithExercises,
-} from './Types';
-import { get, mainClient, post, routeConfig } from '../services/api';
+import { SessionWithExercises, TrainingDayWithExercises } from './Types';
+import { get, mainClient, post, put, routeConfig } from '../services/api';
 
 type LoadingState =
     | 'create-session'
-    | 'delete-session'
+    | 'end-session'
     | 'update-session'
     | 'get-sessions'
     | 'check-active-session';
-
-type Session = {
-    session_id: string;
-    day_id: string;
-    start_time: string;
-    end_time: string;
-    notes: string;
-    exercises: SessionExercise[];
-};
-
-type Set = {
-    set_id: string;
-    exercise_id: string;
-    reps: number;
-    weight: number;
-    notes: string;
-};
-
-type SessionExercise = {
-    session_id: string;
-    exercise_id: string;
-    sets: Set[];
-    weight: number;
-    notes: string;
-};
 
 export class SessionStore {
     loadingState: LoadingState[] = [];
@@ -69,19 +40,15 @@ export class SessionStore {
         this.sessions = sessions;
     };
 
-    setCurrentSession = (session: SessionWithExercises) => {
+    setCurrentSession = (session: SessionWithExercises | null) => {
         this.currentSession = session;
     };
 
-    createSession = async (trainingDay: TrainingDayWithExercises) => {
+    createSession = async (day_id: string) => {
         this.addLoadingState('create-session');
         const data = await post<SessionWithExercises>({
             client: mainClient,
-            url: routeConfig.createSession,
-            data: {
-                day_id: trainingDay.day_id,
-                day_name: trainingDay.day_name,
-            },
+            url: routeConfig.createSession(day_id),
             onError: (error) => {
                 console.log('error', error);
             },
@@ -92,6 +59,25 @@ export class SessionStore {
             },
         });
         this.removeLoadingState('create-session');
+        return data;
+    };
+
+    endSession = async (session_id: string) => {
+        this.addLoadingState('end-session');
+        const data = await put<string>({
+            client: mainClient,
+            url: routeConfig.endSession(session_id),
+            onError: (error) => {
+                console.log('error', error);
+            },
+            onResponse: (response) => {
+                if (response.data) {
+                    this.setCurrentSession(null);
+                    return response.data;
+                }
+            },
+        });
+        this.removeLoadingState('end-session');
         return data;
     };
 

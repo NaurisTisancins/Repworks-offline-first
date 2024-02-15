@@ -7,6 +7,7 @@ import { Pressable, useColorScheme } from 'react-native';
 import { RoutineStoreProvider } from '../store/index';
 import { Text } from '../components/Themed';
 import Toast from 'react-native-toast-message';
+import Colors from '../constants/Colors';
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -64,7 +65,11 @@ function RootLayoutNav() {
                                         );
                                     }}
                                 >
-                                    <Text style={{ color: 'white' }}>
+                                    <Text
+                                        style={{
+                                            color: Colors.dark.grayCool[200],
+                                        }}
+                                    >
                                         Routines
                                     </Text>
                                 </Pressable>

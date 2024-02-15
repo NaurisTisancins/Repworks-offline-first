@@ -1,19 +1,12 @@
-import {
-    ActivityIndicator,
-    Pressable,
-    StyleSheet,
-    ViewStyle,
-} from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import { View, Text } from '../../components/Themed';
 import { TextInput } from '../common/TextInput';
-import Checkbox from 'expo-checkbox';
 import ButtonPrimary from '../common/ButtonPrimary';
 import {
     FieldValues,
     FormProvider,
     SubmitErrorHandler,
     SubmitHandler,
-    set,
     useForm,
 } from 'react-hook-form';
 import { useStore } from '../../store';
@@ -21,7 +14,6 @@ import { FormStep } from '../formStepper/FormStepper';
 import React from 'react';
 import Colors from '../../constants/Colors';
 import Sizing from '../../constants/Sizing';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export interface FormValues extends FieldValues {
     name: string;
@@ -149,7 +141,7 @@ const CreateRoutineForm = ({
                                 marginBottom: Sizing.spacing['md'],
                                 borderRadius: Sizing.borderRadius['sm'],
                                 padding: 2,
-                                ...Colors.dark.shadowStyle,
+                                ...Colors.dark.shadows.dark.elevation2,
                             }}
                         >
                             <Pressable
@@ -196,7 +188,7 @@ const CreateRoutineForm = ({
                             ) : (
                                 <Text
                                     style={{
-                                        color: 'white',
+                                        color: Colors.dark.grayCool[200],
                                         fontWeight: '600',
                                         fontSize: 16,
                                     }}
@@ -217,7 +209,7 @@ const CreateRoutineForm = ({
 const styles = StyleSheet.create({
     container: {
         height: '100%',
-        backgroundColor: Colors.dark['background'],
+        backgroundColor: Colors.dark.background[600],
         gap: Sizing.spacing['xs'],
     },
     formContainer: {
@@ -240,7 +232,7 @@ const styles = StyleSheet.create({
         borderRadius: Sizing.borderRadius['xs'],
     },
     activeBG: {
-        backgroundColor: Colors.dark.gray300,
+        backgroundColor: Colors.dark.grayWarm[300],
     },
     inactiveBG: {
         backgroundColor: 'transparent',

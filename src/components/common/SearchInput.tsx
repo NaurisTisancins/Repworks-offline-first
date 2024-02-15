@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        color: Colors.dark.textSecondary,
+        color: Colors.dark.grayCool[200],
         marginBottom: Sizing.spacing['sm'],
         marginLeft: 0,
     },
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 4,
         borderWidth: 1,
-        borderColor: Colors.dark.gray400,
+        borderColor: Colors.dark.grayCool[400],
         marginBottom: 10,
     },
 });

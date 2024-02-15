@@ -127,7 +127,7 @@ const CreateRoutineRoutineScreen = () => {
 
     const container: ViewStyle = {
         height: windowDimensions.height,
-        backgroundColor: Colors.dark.background,
+        backgroundColor: Colors.dark.background[600],
     };
 
     return (
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
         height: 100,
         paddingHorizontal: Sizing.spacing['md'],
         paddingVertical: Sizing.spacing['md'],
-        backgroundColor: Colors.dark['background'],
+        backgroundColor: Colors.dark.background[600],
     },
 });
 

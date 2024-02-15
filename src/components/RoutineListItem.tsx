@@ -34,7 +34,7 @@ export default function RoutineListItem({ routine }: Readonly<RoutineProps>) {
     const activeStyle: StyleProp<ViewStyle> = {
         height: 50,
         width: '100%',
-        backgroundColor: `${Colors.dark['gray200']}`,
+        backgroundColor: `${Colors.dark.grayCool[200]}`,
         borderRadius: 20,
         padding: 15,
     };
@@ -47,7 +47,7 @@ export default function RoutineListItem({ routine }: Readonly<RoutineProps>) {
                     {routine.is_active && (
                         <Text
                             style={{
-                                color: Colors.dark.gray600,
+                                color: Colors.dark.background[200],
                                 backgroundColor: 'transparent',
                                 fontSize: Sizing.fontSize['xs'],
                                 verticalAlign: 'top',
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
     },
     title: {
-        color: Colors.dark.gray600,
+        color: Colors.dark.grayCool[800],
         fontSize: Sizing.fontSize['md'],
         fontWeight: '600',
     },

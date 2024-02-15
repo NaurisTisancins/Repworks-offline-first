@@ -15,7 +15,10 @@ export type CreateRoutinePayload = {
 
 export interface TrainingDay {
     day_id?: string;
+    routine_id: string;
     day_name: string;
+    created_at: string;
+    updated_at: string;
 }
 
 export type TrainingDayWithExercises = TrainingDay & {

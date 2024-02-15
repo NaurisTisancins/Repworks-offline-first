@@ -51,7 +51,7 @@ const generateTag = (tags: string[]) => {
 
     return tags.map((tag) => (
         <View key={tag} style={tagStyle(tag)}>
-            <Text style={{ color: 'white' }}>{tag}</Text>
+            <Text style={{ color: Colors.dark.grayCool[200] }}>{tag}</Text>
         </View>
     ));
 };
@@ -126,7 +126,7 @@ const ExerciseListItemSelected = ({
 
 const styles = StyleSheet.create({
     title: {
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         fontSize: Sizing.fontSize['md'],
         fontWeight: '600',
         paddingBottom: Sizing.spacing['sm'],

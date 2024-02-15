@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     container: {
         minHeight: 50,
         width: '100%',
-        backgroundColor: Colors.dark.accent2,
+        backgroundColor: Colors.dark.green[400],
         borderRadius: 20,
         padding: 15,
     },
@@ -60,6 +60,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: Colors.dark.white,
-        ...Colors.dark.shadowStyle,
+        ...Colors.dark.shadows.dark.elevation2,
     },
 });

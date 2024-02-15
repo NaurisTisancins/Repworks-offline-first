@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import ActiveRoutineListItem from './ActiveRoutineListItem';
 import ButtonPrimary from './common/ButtonPrimary';
 import { router } from 'expo-router';
+import Colors from '../constants/Colors';
 
 function ActiveRoutineView() {
     const {
@@ -51,18 +52,18 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     title: {
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         fontSize: 24,
         fontWeight: '600',
         marginBottom: 10,
     },
     noRoutines: {
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         marginBottom: 10,
     },
 
     separatorText: {
-        color: 'white',
+        color: Colors.dark.grayCool[200],
         display: 'flex',
         textAlign: 'center',
         width: '100%',

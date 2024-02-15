@@ -23,7 +23,7 @@ const AddExercises = () => {
         >
             <ScrollView
                 style={{
-                    backgroundColor: Colors.dark['background'],
+                    backgroundColor: Colors.dark.background[600],
                     height: '100%',
                 }}
             >
@@ -42,7 +42,7 @@ const AddExercises = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.dark['background'],
+        backgroundColor: Colors.dark.background[600],
         gap: 20,
     },
 });

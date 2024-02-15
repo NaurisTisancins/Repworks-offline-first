@@ -40,7 +40,7 @@ const RoutineList = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.dark['background'],
+        backgroundColor: Colors.dark.background[600],
         height: '100%',
         gap: 12,
     },

@@ -164,15 +164,15 @@ function TrainingDayAddExerciseItem({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.dark['gray200'],
+        backgroundColor: Colors.dark.grayCool[200],
         borderRadius: Sizing.borderRadius['md'],
         paddingHorizontal: Sizing.spacing['md'],
         paddingVertical: Sizing.spacing['lg'],
         height: 'auto',
     },
     titleChip: {
-        backgroundColor: Colors.dark.gray600,
-        ...Colors.dark.shadowStyle,
+        backgroundColor: Colors.dark.background[200],
+        ...Colors.dark.shadows.dark.elevation2,
         alignSelf: 'flex-start',
         justifyContent: 'center',
         borderRadius: Sizing.borderRadius['sm'],
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
         fontSize: Sizing.fontSize['md'],
         fontWeight: '600',
         alignContent: 'center',
-        color: Colors.dark.text,
+        color: Colors.dark.grayCool[200],
     },
 
     exercisesContainer: {
