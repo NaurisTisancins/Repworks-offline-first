@@ -7,13 +7,16 @@ import Sizing from '../../constants/Sizing';
 import { useState } from 'react';
 import Button from '../common/Button';
 import Icon from '../common/Icon';
+import { useStore } from '../../store';
 
 type SessionFormProps = {
     performance: Performance;
 };
 
 export const SessionPerformanceForm = ({ performance }: SessionFormProps) => {
-    const [sets, setSets] = useState<SetPerformance[] | []>([]);
+    const [sets, setSets] = useState<SetPerformance[] | []>(
+        performance.sets || []
+    );
 
     function addSet() {
         setSets([
@@ -23,8 +26,6 @@ export const SessionPerformanceForm = ({ performance }: SessionFormProps) => {
                 reps: 0,
                 weight: 0,
                 rir: 0,
-                created_at: new Date().toISOString(),
-                updated_at: null,
             },
         ]);
     }
@@ -53,6 +54,7 @@ export const SessionPerformanceForm = ({ performance }: SessionFormProps) => {
                         <SetAndRepInputRow
                             key={set.set_number}
                             setPerformance={set}
+                            performanceData={performance}
                         />
                     );
                 })}

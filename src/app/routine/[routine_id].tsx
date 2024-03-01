@@ -96,7 +96,7 @@ function RoutineScreen() {
         <ScrollView style={styles.container}>
             <View style={styles.trainingDayContainer}>
                 <Text style={styles.name}>{selectedRoutine.name}</Text>
-                <Text
+                {/* <Text
                     style={{
                         textAlign: 'left',
                         fontSize: Sizing.fontSize['sm'],
@@ -107,7 +107,7 @@ function RoutineScreen() {
                     }}
                 >
                     {JSON.stringify(currentSession, null, 2)}
-                </Text>
+                </Text> */}
 
                 {trainingDays && trainingDays.length > 0 ? (
                     trainingDays.map((item: TrainingDayWithExercises) => {

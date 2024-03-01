@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {
+    DimensionValue,
     TextInput as RNTextInput,
     TextInputProps as RNTextInputProps,
     StyleSheet,
@@ -13,6 +14,7 @@ import {
     useFormContext,
     ControllerProps,
     UseControllerProps,
+    Control,
 } from 'react-hook-form';
 import Sizing from '../../constants/Sizing';
 import Colors, { InsetShadows, Shadows } from '../../constants/Colors';
@@ -22,7 +24,12 @@ interface TextInputProps extends RNTextInputProps, UseControllerProps {
     labelColor?: string;
     name: string;
     height?: number;
+    width?: number;
+    paddngHorizontal?: number;
+    paddingVertical?: number;
     defaultValue?: string;
+    backgroundColor?: string;
+    placeholder?: string;
     setFormError: Function;
 }
 
@@ -39,7 +46,15 @@ const ControlledInput = (props: TextInputProps) => {
 
     const inputStyles = {
         ...styles.input,
+        backgroundColor: props.backgroundColor ?? styles.input.backgroundColor,
         height: props.height ? props.height : 40,
+        width: props.width ?? ('100%' as DimensionValue),
+        paddingHorizontal: props.paddngHorizontal
+            ? props.paddngHorizontal
+            : Sizing.spacing['md'],
+        paddingVertical: props.paddingVertical
+            ? props.paddingVertical
+            : Sizing.spacing['xs'],
     };
 
     const inputStyleProps = props.multiline
@@ -61,7 +76,7 @@ const ControlledInput = (props: TextInputProps) => {
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
                     inputMode={inputProps.inputMode ?? 'text'}
-                    value={field.value}
+                    value={field.value.toString()}
                     {...inputProps}
                     style={inputStyleProps}
                 />
@@ -111,15 +126,12 @@ const styles = StyleSheet.create({
     },
     input: {
         backgroundColor: Colors.dark.grayWarm[100],
-        height: 40,
-        paddingHorizontal: Sizing.spacing['md'],
         borderRadius: Sizing.borderRadius['sm'],
         ...Shadows.light.elevation2,
     },
     multiLineInput: {
         backgroundColor: Colors.dark.grayWarm[100],
         minHeight: 80,
-        paddingHorizontal: Sizing.spacing['md'],
         borderRadius: Sizing.borderRadius['sm'],
         ...Shadows.light.elevation2,
     },

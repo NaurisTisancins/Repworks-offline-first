@@ -26,4 +26,8 @@ export const routeConfig = {
     endSession: (session_id: string) => `/session/end/${session_id}`,
     getSessionInProgress: (routine_id: string) =>
         `/session/in_progress/${routine_id}`,
+
+    saveOrUpdatePerformance: (session_id: string, exercise_id: string) => {
+        return `/session/${session_id}/${exercise_id}`;
+    },
 };

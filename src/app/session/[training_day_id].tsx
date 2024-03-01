@@ -40,7 +40,7 @@ const NewSessionView = () => {
                     color: 'white',
                 }}
             >
-                {JSON.stringify(currentSession?.performance, null, 2)}
+                {/* {JSON.stringify(currentSession?.performance, null, 2)} */}
             </Text>
             <Animated.ScrollView
                 style={{

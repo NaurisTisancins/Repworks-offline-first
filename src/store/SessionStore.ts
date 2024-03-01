@@ -2,6 +2,8 @@ import { makeAutoObservable } from 'mobx';
 import {
     SessionWithExercises,
     SessionWithPerformance,
+    SetPerformance,
+    SetPerformancePayload,
     TrainingDayWithExercises,
 } from './Types';
 import { get, mainClient, post, put, routeConfig } from '../services/api';
@@ -104,6 +106,34 @@ export class SessionStore {
         });
 
         this.removeLoadingState('check-active-session');
+        return data;
+    };
+
+    saveOrUpdatePerformance = async (
+        session_id: string,
+        exercise_id: string,
+        performance: SetPerformancePayload
+    ) => {
+        this.addLoadingState('update-session');
+        console.log('performance', performance);
+        console.log(
+            'routeConfig.saveOrUpdatePerformance(session_id, exercise_id)',
+            routeConfig.saveOrUpdatePerformance(session_id, exercise_id)
+        );
+        const data = await post<SetPerformance>({
+            client: mainClient,
+            url: routeConfig.saveOrUpdatePerformance(session_id, exercise_id),
+            data: performance,
+            onError: (error) => {
+                console.log('error', error);
+            },
+            onResponse: (response) => {
+                if (response.data) {
+                    return response.data;
+                }
+            },
+        });
+        this.removeLoadingState('update-session');
         return data;
     };
 }

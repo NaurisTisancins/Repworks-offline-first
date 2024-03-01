@@ -71,7 +71,7 @@ export type SessionWithPerformance = {
 
 export type Performance = {
     session_id: string;
-    exerciseId: string;
+    exercise_id: string;
     exercise_name: string;
     sets: SetPerformance[] | [];
     created_at: string;
@@ -84,8 +84,15 @@ export type SetPerformance = {
     reps: number;
     set_number: number;
     rir: number;
-    created_at: string | null;
-    updated_at: string | null;
+    created_at?: string | null;
+    updated_at?: string | null;
+};
+
+export type SetPerformancePayload = {
+    set_number: number;
+    weight: number;
+    reps: number;
+    rir: number;
 };
 
 // responses
