@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { View } from '../../components/Themed';
 import RoutineList from '../../components/RoutineList';
-import ButtonPrimary from '../../components/common/ButtonPrimary';
+import Button from '../../components/common/Button';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
@@ -26,7 +26,7 @@ const RoutineListScreen = () => {
                     paddingHorizontal: 14,
                 }}
             >
-                <ButtonPrimary
+                <Button
                     onButtonPress={() => {
                         setSelectedRoutine(null);
 

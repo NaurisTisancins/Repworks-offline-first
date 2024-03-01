@@ -5,7 +5,7 @@ import TrainingDayItem from '../../components/TrainingDayItem';
 import { useEffect, useState } from 'react';
 import { TrainingDayWithExercises } from '../../store/Types';
 import { router, useLocalSearchParams } from 'expo-router';
-import ButtonPrimary from '../../components/common/ButtonPrimary';
+import Button from '../../components/common/Button';
 import Colors from '../../constants/Colors';
 import Sizing from '../../constants/Sizing';
 import { observer } from 'mobx-react';
@@ -24,7 +24,7 @@ function RoutineScreen() {
         currentTrainingDay,
         getTrainingDaysWithExercises,
     } = useStore().RoutineStore;
-    const { createSession, currentSession, checkIfSessionInProgress } =
+    const { createSession, currentSession, getSessionInProgress } =
         useStore().SessionStore;
 
     const getTrainingDaysList = async () => {
@@ -61,7 +61,7 @@ function RoutineScreen() {
         }
 
         if (currentTrainingDay?.day_id) {
-            const isSessionInProgress = await checkIfSessionInProgress(
+            const isSessionInProgress = await getSessionInProgress(
                 selectedRoutine?.routine_id as string
             );
 
@@ -123,14 +123,14 @@ function RoutineScreen() {
                                             Start Session?
                                         </Text>
                                         <View style={styles.buttonsContainer}>
-                                            <ButtonPrimary
+                                            <Button
                                                 title='Start'
                                                 onButtonPress={() => {
                                                     startSession(item);
                                                 }}
                                                 width={80}
                                             />
-                                            <ButtonPrimary
+                                            <Button
                                                 title='Cancel'
                                                 onButtonPress={() =>
                                                     closeModal()
@@ -149,7 +149,7 @@ function RoutineScreen() {
                     </Text>
                 )}
 
-                <ButtonPrimary
+                <Button
                     title='Edit routine'
                     onButtonPress={() => router.push('/routine/createRoutine')}
                 />

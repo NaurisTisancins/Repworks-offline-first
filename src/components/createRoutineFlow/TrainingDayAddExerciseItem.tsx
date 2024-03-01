@@ -8,13 +8,13 @@ import {
 } from 'react-native';
 import { useStore } from '../../store';
 import React from 'react';
-import ButtonPrimary from '../common/ButtonPrimary';
+import Button from '../common/Button';
 import Icon from '../common/Icon';
 import { useDebounce } from '../../utils/use-debounce';
 import MiniModal from '../common/MiniModal';
 import ExerciseSearchModalContent from '../ExerciseSearchModalContent';
 import ExerciseListItemSelected from '../ExerciseListItemSelected';
-import Colors from '../../constants/Colors';
+import Colors, { Shadows } from '../../constants/Colors';
 import Sizing from '../../constants/Sizing';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
@@ -92,58 +92,56 @@ function TrainingDayAddExerciseItem({
 
     return (
         <View style={styles.container}>
-            <View>
-                <View
-                    style={{
-                        gap: Sizing.spacing['md'],
-                        backgroundColor: 'transparent',
-                    }}
-                >
+            <View
+                style={{
+                    gap: Sizing.spacing['xs'],
+                    backgroundColor: 'transparent',
+                }}
+            >
+                <View style={styles.headerContainer}>
                     <View style={styles.titleChip}>
                         <Text style={styles.title}>{trainingDay.day_name}</Text>
                     </View>
-
-                    <ButtonPrimary
-                        title='Add exercise'
-                        onButtonPress={() => openModal()}
-                    />
+                    <View style={styles.exerciseCountChip}>
+                        <Text style={styles.exerciseCount}>{`${
+                            trainingDay.exercises?.length ?? 0
+                        } exercises`}</Text>
+                    </View>
                 </View>
 
-                <Pressable
-                    style={{
-                        paddingTop: Sizing.spacing['md'],
-                        width: '100%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                    onPress={() => {
-                        if (exerciseList.length === 0) {
-                            console.log('no exercises');
-                            getExercises();
-                        }
-                        setExerciseFormVisible(!exerciseFormVisible);
-                    }}
-                >
-                    {exerciseFormVisible ? (
-                        <Icon name='chevron-up' size={18} color='black' />
-                    ) : (
-                        <Icon name='chevron-down' size={18} color='black' />
-                    )}
-                </Pressable>
+                <Button
+                    title='Add exercise'
+                    onButtonPress={() => openModal()}
+                />
             </View>
 
-            {exerciseFormVisible && (
-                <View style={styles.exercisesContainer}>
-                    {trainingDay.exercises &&
-                        trainingDay?.exercises.map((exercise: Exercise) => (
-                            <ExerciseListItemSelected
-                                key={exercise.link_id}
-                                exercise={{ ...exercise }}
-                                onRemove={onRemoveExerceiseFromDay}
-                            />
-                        ))}
-                </View>
-            )}
+            <Pressable
+                style={{
+                    paddingTop: Sizing.spacing['md'],
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+                onPress={() => {
+                    if (exerciseList.length === 0) {
+                        console.log('no exercises');
+                        getExercises();
+                    }
+                    setExerciseFormVisible(!exerciseFormVisible);
+                }}
+            ></Pressable>
+
+            <View style={styles.exercisesContainer}>
+                {trainingDay.exercises &&
+                    trainingDay?.exercises.map((exercise: Exercise) => (
+                        <ExerciseListItemSelected
+                            key={exercise.link_id}
+                            exercise={{ ...exercise }}
+                            onRemove={onRemoveExerceiseFromDay}
+                        />
+                    ))}
+            </View>
+
             {isStateLoading(
                 'add-exercise-to-training-day' ||
                     'get-exercises-by-training-day-id'
@@ -170,28 +168,45 @@ const styles = StyleSheet.create({
         paddingVertical: Sizing.spacing['lg'],
         height: 'auto',
     },
+    headerContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        backgroundColor: 'transparent',
+        paddingBottom: Sizing.spacing['md'],
+    },
+    exerciseCountChip: {
+        borderRadius: Sizing.borderRadius['sm'],
+        backgroundColor: Colors.dark.green[200],
+        paddingHorizontal: Sizing.spacing['sm'],
+    },
+    exerciseCount: {
+        fontSize: Sizing.fontSize['sm'],
+        fontWeight: '600',
+        paddingVertical: Sizing.spacing['sm'],
+        color: Colors.dark.green[800],
+    },
     titleChip: {
-        backgroundColor: Colors.dark.background[200],
-        ...Colors.dark.shadows.dark.elevation2,
+        backgroundColor: Colors.dark.grayWarm[300],
+        ...Shadows.dark.elevation2,
         alignSelf: 'flex-start',
         justifyContent: 'center',
         borderRadius: Sizing.borderRadius['sm'],
-        paddingHorizontal: Sizing.spacing['sm'],
+        paddingHorizontal: Sizing.spacing['md'],
         paddingVertical: Sizing.spacing['sm'],
-
         opacity: 0.7,
     },
     title: {
         fontSize: Sizing.fontSize['md'],
         fontWeight: '600',
         alignContent: 'center',
-        color: Colors.dark.grayCool[200],
+        color: Colors.dark.grayWarm[900],
     },
 
     exercisesContainer: {
         width: '100%',
-        gap: 20,
-        paddingTop: Sizing.spacing['md'],
+        gap: Sizing.spacing['md'],
     },
 });
 

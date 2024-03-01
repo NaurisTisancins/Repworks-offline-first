@@ -100,113 +100,220 @@ export default {
 
         // Additional Shades
         transparent: 'transparent',
-
-        shadows: {
-            light: {
-                elevation1: {
-                    shadowColor: '#000',
-                    shadowOffset: {
-                        width: 0,
-                        height: 1,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 1.41,
-                    elevation: 2,
-                },
-                elevation2: {
-                    shadowColor: '#000',
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 2.22,
-                    elevation: 4,
-                },
-                elevation3: {
-                    shadowColor: '#000',
-                    shadowOffset: {
-                        width: 0,
-                        height: 3,
-                    },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 3.62,
-                    elevation: 6,
-                },
-                elevation4: {
-                    shadowColor: '#000',
-                    shadowOffset: {
-                        width: 0,
-                        height: 4,
-                    },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4.65,
-                    elevation: 8,
-                },
-                elevation5: {
-                    shadowColor: '#000',
-                    shadowOffset: {
-                        width: 0,
-                        height: 5,
-                    },
-                    shadowOpacity: 0.4,
-                    shadowRadius: 6.27,
-                    elevation: 10,
-                },
-            },
-            dark: {
-                elevation1: {
-                    shadowColor: '#FFF',
-                    shadowOffset: {
-                        width: 0,
-                        height: 1,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 1.41,
-                    elevation: 2,
-                },
-                elevation2: {
-                    shadowColor: '#FFF',
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 2.22,
-                    elevation: 4,
-                },
-                elevation3: {
-                    shadowColor: '#FFF',
-                    shadowOffset: {
-                        width: 0,
-                        height: 3,
-                    },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 3.62,
-                    elevation: 6,
-                },
-                elevation4: {
-                    shadowColor: '#FFF',
-                    shadowOffset: {
-                        width: 0,
-                        height: 4,
-                    },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4.65,
-                    elevation: 8,
-                },
-                elevation5: {
-                    shadowColor: '#FFF',
-                    shadowOffset: {
-                        width: 0,
-                        height: 5,
-                    },
-                    shadowOpacity: 0.4,
-                    shadowRadius: 6.27,
-                    elevation: 10,
-                },
-            },
-        },
     },
     default: {},
+};
+
+export const InsetShadows = {
+    light: {
+        inset1: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            elevation: 2,
+        },
+        inset2: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 2.22,
+            elevation: 4,
+        },
+        inset3: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 3,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 3.62,
+            elevation: 6,
+        },
+        inset4: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 4,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+            elevation: 8,
+        },
+        inset5: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 5,
+            },
+            shadowOpacity: 0.4,
+            shadowRadius: 6.27,
+            elevation: 10,
+        },
+    },
+    dark: {
+        inset1: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            elevation: 2,
+        },
+        inset2: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 2.22,
+            elevation: 4,
+        },
+        inset3: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 3,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 3.62,
+            elevation: 6,
+        },
+        inset4: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 4,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+            elevation: 8,
+        },
+        inset5: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 5,
+            },
+            shadowOpacity: 0.4,
+            shadowRadius: 6.27,
+            elevation: 10,
+        },
+    },
+};
+
+export const Shadows = {
+    light: {
+        elevation1: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            elevation: 2,
+        },
+        elevation2: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 2.22,
+            elevation: 4,
+        },
+        elevation3: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 3,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 3.62,
+            elevation: 6,
+        },
+        elevation4: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 4,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+            elevation: 8,
+        },
+        elevation5: {
+            shadowColor: '#000',
+            shadowOffset: {
+                width: 0,
+                height: 5,
+            },
+            shadowOpacity: 0.4,
+            shadowRadius: 6.27,
+            elevation: 10,
+        },
+    },
+    dark: {
+        elevation1: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+            elevation: 2,
+        },
+        elevation2: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 2.22,
+            elevation: 4,
+        },
+        elevation3: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 3,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 3.62,
+            elevation: 6,
+        },
+        elevation4: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 4,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 4.65,
+            elevation: 8,
+        },
+        elevation5: {
+            shadowColor: '#FFF',
+            shadowOffset: {
+                width: 0,
+                height: 5,
+            },
+            shadowOpacity: 0.4,
+            shadowRadius: 6.27,
+            elevation: 10,
+        },
+    },
 };

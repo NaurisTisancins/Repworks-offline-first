@@ -7,7 +7,7 @@
 // import uuid from 'react-native-uuid';
 
 // import { Exercise, RepsAndSets } from '../store/Types';
-// import ButtonPrimary from './common/ButtonPrimary';
+// import Button from './common/Button';
 // import { useStore } from '../store';
 // import FormFieldArray from './common/FormFieldArray';
 
@@ -97,12 +97,12 @@
 //                                         />
 //                                     ))}
 //                                 <View style={styles.buttonContainer}>
-//                                     <ButtonPrimary
+//                                     <Button
 //                                         width={100}
 //                                         title='Save'
 //                                         onButtonPress={handleSubmit}
 //                                     />
-//                                     <ButtonPrimary
+//                                     <Button
 //                                         width={150}
 //                                         title='Add set'
 //                                         onButtonPress={onAddSet}

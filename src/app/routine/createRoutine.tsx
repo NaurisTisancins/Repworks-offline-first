@@ -11,7 +11,7 @@ import AddTrainingDays from '../../components/createRoutineFlow/AddTrainingDays'
 import AddExercises from '../../components/createRoutineFlow/AddExercises';
 import { FormStep } from '../../components/formStepper/FormStepper';
 import React, { useState } from 'react';
-import ButtonPrimary from '../../components/common/ButtonPrimary';
+import Button from '../../components/common/Button';
 import { useStore } from '../../store';
 import { useRouter } from 'expo-router';
 import Colors from '../../constants/Colors';
@@ -110,7 +110,7 @@ const CreateRoutineRoutineScreen = () => {
                 return <AddExercises />;
             case 4:
                 return (
-                    <ButtonPrimary
+                    <Button
                         title='Confirm'
                         onButtonPress={() =>
                             router.push(
@@ -136,7 +136,7 @@ const CreateRoutineRoutineScreen = () => {
 
             <View style={styles.formNavigationButtons}>
                 {!isFirstStep ? (
-                    <ButtonPrimary
+                    <Button
                         width={100}
                         variant='outlined'
                         title='Back'
@@ -148,7 +148,7 @@ const CreateRoutineRoutineScreen = () => {
                     <View style={{ flex: 1 }} />
                 )}
                 {!isLastStep ? (
-                    <ButtonPrimary
+                    <Button
                         width={100}
                         disabled={!activeStep.done}
                         variant='outlined'

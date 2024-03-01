@@ -1,2 +1,2 @@
-export * from './SessionForm';
+export * from './SessionPerformanceForm';
 export * from './SetAndRepInputRow';

@@ -7,7 +7,7 @@ import {
     ViewStyle,
     TextStyle,
 } from 'react-native';
-import Colors from '../../constants/Colors';
+import Colors, { Shadows } from '../../constants/Colors';
 
 type ButtonProps = {
     title?: string;
@@ -21,7 +21,7 @@ type ButtonProps = {
     style?: StyleProp<ViewStyle>;
 };
 
-export default function ButtonPrimary({
+export default function Button({
     title,
     titleStyles,
     variant = 'primary',
@@ -54,7 +54,7 @@ export default function ButtonPrimary({
             width: width ?? '100%',
             height: height,
             borderRadius: 8,
-            ...Colors.dark.shadows.light.elevation2,
+            ...Shadows.light.elevation2,
             ...(style as object),
         };
 

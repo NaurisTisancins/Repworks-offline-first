@@ -2,7 +2,7 @@ import { Routine } from '../store/Types';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { useStore } from '../store';
-import Colors from '../constants/Colors';
+import Colors, { Shadows } from '../constants/Colors';
 import { useEffect } from 'react';
 
 type RoutineProps = {
@@ -60,6 +60,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: Colors.dark.white,
-        ...Colors.dark.shadows.dark.elevation2,
+        ...Shadows.dark.elevation2,
     },
 });

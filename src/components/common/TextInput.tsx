@@ -15,12 +15,13 @@ import {
     UseControllerProps,
 } from 'react-hook-form';
 import Sizing from '../../constants/Sizing';
-import Colors from '../../constants/Colors';
+import Colors, { InsetShadows, Shadows } from '../../constants/Colors';
 
 interface TextInputProps extends RNTextInputProps, UseControllerProps {
     label?: string;
     labelColor?: string;
     name: string;
+    height?: number;
     defaultValue?: string;
     setFormError: Function;
 }
@@ -36,9 +37,14 @@ const ControlledInput = (props: TextInputProps) => {
 
     const hasError = Boolean(formState?.errors[name]);
 
+    const inputStyles = {
+        ...styles.input,
+        height: props.height ? props.height : 40,
+    };
+
     const inputStyleProps = props.multiline
         ? styles.multiLineInput
-        : styles.input;
+        : inputStyles;
 
     const lableStyle = {
         ...styles.label,
@@ -54,6 +60,7 @@ const ControlledInput = (props: TextInputProps) => {
                     textAlign='left'
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
+                    inputMode={inputProps.inputMode ?? 'text'}
                     value={field.value}
                     {...inputProps}
                     style={inputStyleProps}
@@ -107,14 +114,14 @@ const styles = StyleSheet.create({
         height: 40,
         paddingHorizontal: Sizing.spacing['md'],
         borderRadius: Sizing.borderRadius['sm'],
-        ...Colors.dark.shadows.light.elevation2,
+        ...Shadows.light.elevation2,
     },
     multiLineInput: {
         backgroundColor: Colors.dark.grayWarm[100],
         minHeight: 80,
         paddingHorizontal: Sizing.spacing['md'],
         borderRadius: Sizing.borderRadius['sm'],
-        ...Colors.dark.shadows.light.elevation2,
+        ...Shadows.light.elevation2,
     },
     errorContainer: {
         height: 25,

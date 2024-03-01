@@ -7,7 +7,7 @@ import {
     ViewStyle,
     TextStyle,
 } from 'react-native';
-import ButtonPrimary from '../common/ButtonPrimary';
+import Button from '../common/Button';
 import Sizing from '../../constants/Sizing';
 import Colors from '../../constants/Colors';
 
@@ -37,7 +37,7 @@ const Step = ({ step, active = false, setActive }: StepProps) => {
     };
 
     return (
-        <ButtonPrimary
+        <Button
             variant={`${'primary'}`}
             style={styles.stepContainer}
             onButtonPress={() => setActive(step)}
@@ -45,7 +45,7 @@ const Step = ({ step, active = false, setActive }: StepProps) => {
             <View style={activeStyle}>
                 <Text style={activeTextStyle}>{step.value}</Text>
             </View>
-        </ButtonPrimary>
+        </Button>
     );
 };
 

@@ -58,18 +58,35 @@ export type SessionWithExercises = {
     updated_at: string;
 };
 
-export interface PerformedExercise {
-    id: string;
-    exerciseId: string;
-    exercise: Exercise;
-    repsAndSets: RepsAndSets[] | [];
-}
+export type SessionWithPerformance = {
+    session_id: string;
+    day_id: string;
+    day_name: string;
+    in_progress: boolean;
+    exercises: Exercise[];
+    performance: Performance[];
+    created_at: string;
+    updated_at: string;
+};
 
-export interface RepsAndSets {
-    id: string;
-    weight: string;
-    reps: string;
-}
+export type Performance = {
+    session_id: string;
+    exerciseId: string;
+    exercise_name: string;
+    sets: SetPerformance[] | [];
+    created_at: string;
+    updated_at: string;
+};
+
+export type SetPerformance = {
+    performance_id?: string;
+    weight: number;
+    reps: number;
+    set_number: number;
+    rir: number;
+    created_at: string | null;
+    updated_at: string | null;
+};
 
 // responses
 export type BaseResponseType<T = {}> = {

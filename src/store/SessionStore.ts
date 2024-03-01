@@ -1,5 +1,9 @@
 import { makeAutoObservable } from 'mobx';
-import { SessionWithExercises, TrainingDayWithExercises } from './Types';
+import {
+    SessionWithExercises,
+    SessionWithPerformance,
+    TrainingDayWithExercises,
+} from './Types';
 import { get, mainClient, post, put, routeConfig } from '../services/api';
 
 type LoadingState =
@@ -12,7 +16,7 @@ type LoadingState =
 export class SessionStore {
     loadingState: LoadingState[] = [];
     sessions: SessionWithExercises[] = [];
-    currentSession: SessionWithExercises | null = null;
+    currentSession: SessionWithPerformance | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -40,13 +44,13 @@ export class SessionStore {
         this.sessions = sessions;
     };
 
-    setCurrentSession = (session: SessionWithExercises | null) => {
+    setCurrentSession = (session: SessionWithPerformance | null) => {
         this.currentSession = session;
     };
 
     createSession = async (day_id: string) => {
         this.addLoadingState('create-session');
-        const data = await post<SessionWithExercises>({
+        const data = await post<SessionWithPerformance>({
             client: mainClient,
             url: routeConfig.createSession(day_id),
             onError: (error) => {
@@ -81,11 +85,11 @@ export class SessionStore {
         return data;
     };
 
-    checkIfSessionInProgress = async (routine_id: string) => {
+    getSessionInProgress = async (routine_id: string) => {
         this.addLoadingState('check-active-session');
-        const data = await get<SessionWithExercises>({
+        const data = await get<SessionWithPerformance>({
             client: mainClient,
-            url: routeConfig.checkSessionInProgress(routine_id),
+            url: routeConfig.getSessionInProgress(routine_id),
             onError: (error) => {
                 console.log('error', error);
             },

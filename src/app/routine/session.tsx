@@ -2,7 +2,7 @@
 // import { useStore } from '../../store';
 // import { router } from 'expo-router';
 
-// import ButtonPrimary from '../../components/common/ButtonPrimary';
+// import Button from '../../components/common/Button';
 // // import SessionForm from '../../components/SessionForm';
 
 // function SessionScreen() {
@@ -24,7 +24,7 @@
 //           return <SessionForm key={item.id} exercise={item} />;
 //         })} */}
 //                 <View style={{ marginTop: 20 }} />
-//                 <ButtonPrimary
+//                 <Button
 //                     title='Save session'
 //                     width='100%'
 //                     onButtonPress={saveSessionToStore}

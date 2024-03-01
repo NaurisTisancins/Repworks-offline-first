@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import { View, Text } from '../../components/Themed';
 import { TextInput } from '../common/TextInput';
-import ButtonPrimary from '../common/ButtonPrimary';
+import Button from '../common/Button';
 import {
     FieldValues,
     FormProvider,
@@ -12,7 +12,7 @@ import {
 import { useStore } from '../../store';
 import { FormStep } from '../formStepper/FormStepper';
 import React from 'react';
-import Colors from '../../constants/Colors';
+import Colors, { Shadows } from '../../constants/Colors';
 import Sizing from '../../constants/Sizing';
 
 export interface FormValues extends FieldValues {
@@ -116,6 +116,7 @@ const CreateRoutineForm = ({
                         <TextInput
                             name='name'
                             label='Routine name'
+                            labelColor={Colors.dark.grayCool[200]}
                             placeholder='Push Pull Legs'
                             keyboardType='default'
                             rules={{
@@ -128,6 +129,7 @@ const CreateRoutineForm = ({
                         <TextInput
                             name='description'
                             label='Description'
+                            labelColor={Colors.dark.grayCool[200]}
                             placeholder='Describe your routine'
                             rules={{ maxLength: 1000, minLength: 10 }}
                             multiline
@@ -140,8 +142,9 @@ const CreateRoutineForm = ({
                                 justifyContent: 'space-between',
                                 marginBottom: Sizing.spacing['md'],
                                 borderRadius: Sizing.borderRadius['sm'],
+                                backgroundColor: Colors.dark.grayWarm[100],
                                 padding: 2,
-                                ...Colors.dark.shadows.dark.elevation2,
+                                ...Shadows.dark.elevation2,
                             }}
                         >
                             <Pressable
@@ -174,7 +177,7 @@ const CreateRoutineForm = ({
                             </Pressable>
                         </View>
 
-                        <ButtonPrimary
+                        <Button
                             disabled={
                                 isStateLoading('create-routine') ||
                                 !methods.formState.isValid
@@ -198,7 +201,7 @@ const CreateRoutineForm = ({
                                         : 'Submit Routine'}
                                 </Text>
                             )}
-                        </ButtonPrimary>
+                        </Button>
                     </>
                 )}
             </FormProvider>
@@ -210,7 +213,7 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         backgroundColor: Colors.dark.background[600],
-        gap: Sizing.spacing['xs'],
+        gap: Sizing.spacing['md'],
     },
     formContainer: {
         backgroundColor: 'transparent',
@@ -232,7 +235,7 @@ const styles = StyleSheet.create({
         borderRadius: Sizing.borderRadius['xs'],
     },
     activeBG: {
-        backgroundColor: Colors.dark.grayWarm[300],
+        backgroundColor: Colors.dark.grayWarm[200],
     },
     inactiveBG: {
         backgroundColor: 'transparent',

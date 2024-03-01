@@ -1,4 +1,4 @@
-import Colors from '../constants/Colors';
+import Colors, { Shadows } from '../constants/Colors';
 import Sizing from '../constants/Sizing';
 import { Exercise, TrainingDayWithExercises } from '../store/Types';
 import MiniModal from '../components/common/MiniModal';
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     },
     titleChip: {
         backgroundColor: Colors.dark.grayWarm[300],
-        ...Colors.dark.shadows.dark.elevation2,
+        ...Shadows.dark.elevation2,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: Sizing.borderRadius['sm'],

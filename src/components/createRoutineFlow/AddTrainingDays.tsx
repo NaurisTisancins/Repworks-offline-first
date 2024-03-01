@@ -7,7 +7,7 @@ import {
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { View, Text } from '../Themed';
 import { TextInput } from '../common/TextInput';
-import ButtonPrimary from '../common/ButtonPrimary';
+import Button from '../common/Button';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useStore } from '../../store';
@@ -94,7 +94,7 @@ const AddTrainingDays = ({
         <View
             style={{
                 height: '100%',
-                backgroundColor: Colors.dark.background[400],
+                backgroundColor: Colors.dark.background[600],
             }}
         >
             <FormProvider {...methods}>
@@ -107,20 +107,18 @@ const AddTrainingDays = ({
                     </View>
                 )}
 
-                <View
-                    style={{
-                        backgroundColor: Colors.dark.background[400],
-                    }}
-                >
+                <View>
                     <View
                         style={{
                             backgroundColor: 'transparent',
                             paddingBottom: Sizing.spacing['md'],
+                            gap: Sizing.spacing['md'],
                         }}
                     >
                         <TextInput
                             name={'day_name'}
                             label='Training day name'
+                            labelColor={Colors.dark.grayCool[200]}
                             placeholder='Push day...'
                             keyboardType='default'
                             rules={{
@@ -131,7 +129,7 @@ const AddTrainingDays = ({
                             setFormError={setError}
                         />
                         {selectedRoutine && selectedRoutine.routine_id && (
-                            <ButtonPrimary
+                            <Button
                                 style={{}}
                                 disabled={
                                     isStateLoading('create-training-days') ||
@@ -160,13 +158,12 @@ const AddTrainingDays = ({
                                         Add training day
                                     </Text>
                                 )}
-                            </ButtonPrimary>
+                            </Button>
                         )}
                     </View>
 
                     <ScrollView
                         contentContainerStyle={{
-                            backgroundColor: Colors.dark.background[400],
                             gap: Sizing.spacing['md'],
                             paddingVertical: Sizing.spacing['md'],
                         }}
@@ -186,7 +183,7 @@ const AddTrainingDays = ({
                                             <View
                                                 style={styles.buttonsContainer}
                                             >
-                                                <ButtonPrimary
+                                                <Button
                                                     title='Delete'
                                                     variant='danger'
                                                     onButtonPress={() =>
@@ -194,7 +191,7 @@ const AddTrainingDays = ({
                                                     }
                                                     width={80}
                                                 />
-                                                <ButtonPrimary
+                                                <Button
                                                     title='Cancel'
                                                     variant='passive'
                                                     onButtonPress={() =>
