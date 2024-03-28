@@ -6,7 +6,14 @@ import {
     SetPerformancePayload,
     TrainingDayWithExercises,
 } from './Types';
-import { get, mainClient, post, put, routeConfig } from '../services/api';
+import {
+    get,
+    mainClient,
+    post,
+    put,
+    remove,
+    routeConfig,
+} from '../services/api';
 
 type LoadingState =
     | 'create-session'
@@ -115,15 +122,29 @@ export class SessionStore {
         performance: SetPerformancePayload
     ) => {
         this.addLoadingState('update-session');
-        console.log('performance', performance);
-        console.log(
-            'routeConfig.saveOrUpdatePerformance(session_id, exercise_id)',
-            routeConfig.saveOrUpdatePerformance(session_id, exercise_id)
-        );
+
         const data = await post<SetPerformance>({
             client: mainClient,
             url: routeConfig.saveOrUpdatePerformance(session_id, exercise_id),
             data: performance,
+            onError: (error) => {
+                console.log('error', error);
+            },
+            onResponse: (response) => {
+                if (response.data) {
+                    return response.data;
+                }
+            },
+        });
+        this.removeLoadingState('update-session');
+        return data;
+    };
+
+    deleteSetPerformance = async (performance_id: string) => {
+        this.addLoadingState('update-session');
+        const data = await remove<string>({
+            client: mainClient,
+            url: routeConfig.deleteSetPerformance(performance_id),
             onError: (error) => {
                 console.log('error', error);
             },

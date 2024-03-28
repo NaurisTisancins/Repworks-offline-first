@@ -30,4 +30,6 @@ export const routeConfig = {
     saveOrUpdatePerformance: (session_id: string, exercise_id: string) => {
         return `/session/${session_id}/${exercise_id}`;
     },
+    deleteSetPerformance: (performance_id: string) =>
+        `/session/${performance_id}`,
 };

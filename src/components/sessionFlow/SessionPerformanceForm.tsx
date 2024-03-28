@@ -8,115 +8,144 @@ import { useState } from 'react';
 import Button from '../common/Button';
 import Icon from '../common/Icon';
 import { useStore } from '../../store';
+import Toast from 'react-native-toast-message';
+import { observer } from 'mobx-react';
 
 type SessionFormProps = {
     performance: Performance;
 };
 
-export const SessionPerformanceForm = ({ performance }: SessionFormProps) => {
-    const [sets, setSets] = useState<SetPerformance[] | []>(
-        performance.sets || []
-    );
+export const SessionPerformanceForm = observer(
+    ({ performance }: SessionFormProps) => {
+        const { deleteSetPerformance, currentSession } =
+            useStore().SessionStore;
+        const [sets, setSets] = useState<SetPerformance[] | []>(
+            performance.sets || []
+        );
 
-    function addSet() {
-        setSets([
-            ...sets,
-            {
-                set_number: sets.length + 1,
-                reps: 0,
-                weight: 0,
-                rir: 0,
-            },
-        ]);
-    }
+        function addSet() {
+            setSets([
+                ...sets,
+                {
+                    set_number: sets.length + 1,
+                    reps: 0,
+                    weight: 0,
+                    rir: 0,
+                },
+            ]);
+        }
 
-    function removeSet() {
-        setSets(sets.slice(0, -1));
-    }
+        async function removeSet() {
+            const setToRemove = sets[sets.length - 1];
+            if (setToRemove.performance_id) {
+                const result = await deleteSetPerformance(
+                    setToRemove.performance_id
+                );
+                if (result) {
+                    setSets(sets.slice(0, -1));
+                }
 
-    return (
-        <View style={styles.formContainer}>
-            <View style={styles.headerContainer}>
-                <View style={styles.titleChip}>
-                    <Text style={styles.title}>
-                        {performance.exercise_name}
-                    </Text>
-                </View>
-            </View>
-            <View
-                style={{
-                    gap: Sizing.spacing.md,
-                    paddingBottom: Sizing.spacing.md,
-                }}
-            >
-                {sets.map((set: SetPerformance, index) => {
-                    return (
-                        <SetAndRepInputRow
-                            key={set.set_number}
-                            setPerformance={set}
-                            performanceData={performance}
-                        />
-                    );
-                })}
-            </View>
-            <View
-                style={{
-                    flexDirection: 'row',
-                    gap: Sizing.spacing.sm,
-                }}
-            >
-                <View
-                    style={{
-                        flex: 1,
-                    }}
-                >
-                    <Button
-                        title='-'
-                        variant='passive'
-                        height={32}
-                        width={'100%'}
-                        titleStyles={{
-                            fontSize: Sizing.fontSize.md,
-                            fontWeight: 'bold',
-                            color: Colors.dark.grayWarm[200],
-                        }}
-                        onButtonPress={() => removeSet()}
-                    >
-                        <Icon
-                            name='minus'
-                            color={Colors.dark.grayWarm[600]}
-                            size={16}
-                        />
-                    </Button>
+                return;
+            } else {
+                setSets(sets.slice(0, -1));
+            }
+            Toast.show({
+                text1: 'Set removed successfully',
+                type: 'success',
+            });
+        }
+
+        return (
+            <View style={styles.formContainer}>
+                <View style={styles.headerContainer}>
+                    <View style={styles.titleChip}>
+                        <Text style={styles.title}>
+                            {performance.exercise_name}
+                        </Text>
+                        <Text style={styles.title}>
+                            {JSON.stringify(performance.sets, null, 2)}
+                        </Text>
+                    </View>
                 </View>
                 <View
                     style={{
-                        flex: 1,
+                        gap: Sizing.spacing.md,
+                        paddingBottom: Sizing.spacing.md,
                     }}
                 >
-                    <Button
-                        title='+'
-                        variant='primary'
-                        height={32}
-                        width={'100%'}
-                        titleStyles={{
-                            fontSize: Sizing.fontSize.md,
-                            fontWeight: 'bold',
-                            color: Colors.dark.grayWarm[200],
+                    {sets.map((set: SetPerformance) => {
+                        return (
+                            <SetAndRepInputRow
+                                key={set.set_number}
+                                setPerformance={set}
+                                performanceData={performance}
+                                setSets={setSets}
+                                sets={sets}
+                            />
+                        );
+                    })}
+                </View>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        gap: Sizing.spacing.sm,
+                    }}
+                >
+                    {sets.length > 0 && (
+                        <View
+                            style={{
+                                flex: 1,
+                            }}
+                        >
+                            <Button
+                                title='-'
+                                variant='passive'
+                                height={32}
+                                width={'100%'}
+                                titleStyles={{
+                                    fontSize: Sizing.fontSize.md,
+                                    fontWeight: 'bold',
+                                    color: Colors.dark.grayWarm[200],
+                                }}
+                                onButtonPress={() => removeSet()}
+                            >
+                                <Icon
+                                    name='minus'
+                                    color={Colors.dark.grayWarm[200]}
+                                    size={16}
+                                />
+                            </Button>
+                        </View>
+                    )}
+                    <View
+                        style={{
+                            flex: 1,
                         }}
-                        onButtonPress={() => addSet()}
                     >
-                        <Icon
-                            name='plus'
-                            color={Colors.dark.grayWarm[200]}
-                            size={16}
-                        />
-                    </Button>
+                        <Button
+                            title='+'
+                            variant='primary'
+                            height={32}
+                            width={'100%'}
+                            titleStyles={{
+                                fontSize: Sizing.fontSize.md,
+                                fontWeight: 'bold',
+                                color: Colors.dark.grayWarm[200],
+                            }}
+                            onButtonPress={() => addSet()}
+                        >
+                            <Icon
+                                name='plus'
+                                color={Colors.dark.grayWarm[200]}
+                                size={16}
+                            />
+                        </Button>
+                    </View>
                 </View>
             </View>
-        </View>
-    );
-};
+        );
+    }
+);
 
 const styles = StyleSheet.create({
     formContainer: {

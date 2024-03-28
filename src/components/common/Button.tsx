@@ -101,21 +101,17 @@ export default function Button({
     };
 
     return (
-        <>
-            <Pressable
-                onPress={onButtonPress}
-                disabled={disabled}
-                style={({ pressed }) => buttonVariantStyles(pressed)}
-            >
-                {children ?? (
-                    <Text
-                        style={[titleStyles ? titleStyles : styles.buttonText]}
-                    >
-                        {title}
-                    </Text>
-                )}
-            </Pressable>
-        </>
+        <Pressable
+            onPress={onButtonPress}
+            disabled={disabled}
+            style={({ pressed }) => buttonVariantStyles(pressed)}
+        >
+            {children ?? (
+                <Text style={[titleStyles ? titleStyles : styles.buttonText]}>
+                    {title}
+                </Text>
+            )}
+        </Pressable>
     );
 }
 

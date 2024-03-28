@@ -11,12 +11,9 @@ import { SessionPerformanceForm } from '../../components';
 import { Performance } from '../../store/Types';
 import Toast from 'react-native-toast-message';
 import { useState } from 'react';
+import { observer } from 'mobx-react';
 
-const NewSessionView = () => {
-    const [windowDimensions, setWindowDimensions] = useState({
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-    });
+const NewSessionView = observer(() => {
     const {
         RoutineStore: { currentTrainingDay },
         SessionStore: { currentSession, endSession },
@@ -56,7 +53,10 @@ const NewSessionView = () => {
                     currentSession.performance.map(
                         (performance: Performance) => {
                             return (
-                                <View style={styles.cardContainer}>
+                                <View
+                                    style={styles.cardContainer}
+                                    key={performance.exercise_id}
+                                >
                                     <SessionPerformanceForm
                                         performance={performance}
                                     />
@@ -78,7 +78,7 @@ const NewSessionView = () => {
             </Animated.ScrollView>
         </View>
     );
-};
+});
 
 const styles = StyleSheet.create({
     container: {
